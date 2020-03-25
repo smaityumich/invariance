@@ -24,20 +24,22 @@ class InvarianceNNGraph(Model, layers.Layer):
         out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight3']), self.bias['bias3']))
         return out
         
-    def call(self, x, env = 0):
+    def call(self, x, env = 0, predict = False):
         if env == 0:
             out = tf.add(tf.matmul(self.invariant_map(x), self.weight['weight_final']) , self.bias['bias_final0'])
             out = tf.concat([-out, out], axis = 1)
+            out = tf.nn.softmax(out)
             #predict_prob = tf.nn.sigmoid(tf.add(tf.matmul(self.invariantMap(x), self.weight['weight_final']), self.bias['bias_final0']))
             #predict_prob2 = tf.concat([1- predict_prob, predict_prob], axis = 1)
-            return tf.nn.softmax(out)
+            return tf.argmax(out, axis = 1) if predict else out
             
         elif env == 1:
             out = tf.add(tf.matmul(self.invariant_map(x), self.weight['weight_final']), self.bias['bias_final1'])
             out = tf.concat([-out, out], axis = 1)
+            out = tf.nn.softmax(out)
             #predict_prob = tf.nn.sigmoid(tf.add(tf.matmul(self.invariantMap(x), self.weight['weight_final']), self.bias['bias_final1']))
             #predict_prob2 = tf.concat([1- predict_prob, predict_prob], axis = 1)
-            return tf.nn.softmax(out) #predict_prob
+            return tf.argmax(out, axis = 1) if predict else out
 
 
 
