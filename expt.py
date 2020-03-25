@@ -6,17 +6,16 @@ Created on Wed Mar 25 09:34:10 2020
 """
 
 import tensorflow as tf
-from tensorflow.keras import Model, layers
 import sinkhorn as sh
 import numpy as np
-from utils import *
+import utils
 import datetime
 
 
 class InvaranceLabelShift():
     
     def __init__(self, data_train, data_test, batch_size = 150, num_steps = 2000, learning_rate = 0.01, reg_wasserstein = 0.5, gamma_wasserstein = 2, reg_var = 0.2, sinkhorn_iter = 5):
-        self.graph = InvaranceNNGraph()
+        self.graph = utils.InvaranceNNGraph()
         self.data_train = data_train
         self.data_test = data_test
         self.batch_size = batch_size
@@ -65,7 +64,7 @@ class InvaranceLabelShift():
             loss = tf.cast(0, dtype = tf.float32)
             for index, (x, y) in enumerate(data_train):
                 probs = self.graph(x, env = index)
-                loss = loss + EntropyLoss(y, probs)
+                loss = loss + utils.EntropyLoss(y, probs)
             loss_train = loss
             for label in [0,1]:
                 conditional_data = [env[0][env[1][:, 1] == label] for env in data_train]
@@ -90,7 +89,7 @@ class InvaranceLabelShift():
         loss = tf.cast(0, dtype = tf.float32)
         for index, (x, y) in enumerate(data_test):
             probs = self.graph(x, env = index)
-            loss = loss + EntropyLoss(y, probs)
+            loss = loss + utils.EntropyLoss(y, probs)
         self.test_loss(loss)
             
         accuracy_test = tf.cast(0, dtype = tf.float32)
