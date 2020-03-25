@@ -1,10 +1,12 @@
 import tensorflow as tf
-from tensorflow.keras import Model, layers
+from tensorflow import keras
+import numpy as np
+from tensorflow import keras
 
 
 
 
-class InvarianceNNGraph(Model, layers.Layer):
+class InvarianceNNGraph(keras.Model, keras.layers.Layer):
     
     def __init__(self):
         super(InvarianceNNGraph, self).__init__()
@@ -29,16 +31,12 @@ class InvarianceNNGraph(Model, layers.Layer):
             out = tf.add(tf.matmul(self.invariant_map(x), self.weight['weight_final']) , self.bias['bias_final0'])
             out = tf.concat([-out, out], axis = 1)
             out = tf.nn.softmax(out)
-            #predict_prob = tf.nn.sigmoid(tf.add(tf.matmul(self.invariantMap(x), self.weight['weight_final']), self.bias['bias_final0']))
-            #predict_prob2 = tf.concat([1- predict_prob, predict_prob], axis = 1)
             return tf.argmax(out, axis = 1) if predict else out
             
         elif env == 1:
             out = tf.add(tf.matmul(self.invariant_map(x), self.weight['weight_final']), self.bias['bias_final1'])
             out = tf.concat([-out, out], axis = 1)
             out = tf.nn.softmax(out)
-            #predict_prob = tf.nn.sigmoid(tf.add(tf.matmul(self.invariantMap(x), self.weight['weight_final']), self.bias['bias_final1']))
-            #predict_prob2 = tf.concat([1- predict_prob, predict_prob], axis = 1)
             return tf.argmax(out, axis = 1) if predict else out
 
 
@@ -61,3 +59,7 @@ def makeModifiedDict(dataDict):
         dHand[0] = tf.cast(x[y == 0], dtype=tf.float32)
         dHand[1] = tf.cast(x[y == 1], dtype=tf.float32)
     return retDict
+
+    
+
+
