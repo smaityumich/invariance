@@ -48,18 +48,6 @@ def EntropyLoss(y, prob):
     return -2*tf.reduce_mean(tf.math.multiply(y, tf.math.log(prob)))
 
 
-
-def makeModifiedDict(dataDict):
-    retDict = dict()
-    for key in dataDict:
-        retDict[key] = dict()
-        dHand = retDict[key]
-        x = dataDict[key]['x']
-        y = dataDict[key]['y']
-        dHand[0] = tf.cast(x[y == 0], dtype=tf.float32)
-        dHand[1] = tf.cast(x[y == 1], dtype=tf.float32)
-    return retDict
-
     
 
 
