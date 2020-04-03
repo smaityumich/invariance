@@ -51,8 +51,8 @@ def sinkhorn_log_stabilized(a, b, M, reg, L, tau = 1e3):
         Transport Problems. arXiv preprint arXiv:1610.06519.
     '''
     def get_K(M, alpha, beta, reg):
-        alpha_expanded = tf.tile(tf.expand_dims(alpha, axis=1), [1, beta.shape[0], 1])
-        beta_expanded = tf.tile(tf.expand_dims(beta, axis=0), [alpha.shape[0], 1, 1])
+        alpha_expanded = tf.tile(tf.expand_dims(alpha, axis=1), [1, beta.shape[0]])
+        beta_expanded = tf.tile(tf.expand_dims(beta, axis=0), [alpha.shape[0], 1])
         return tf.exp(-(M - alpha_expanded - beta_expanded)/reg)
     
     alpha = tf.zeros([a.shape[0],], dtype = tf.float32)
@@ -64,8 +64,8 @@ def sinkhorn_log_stabilized(a, b, M, reg, L, tau = 1e3):
     for _ in range(L):
         
         K = get_K(M, alpha, beta, reg)
-        v = tf.math.divide(b, tf.linalg.matvec(K, u, transpose_a = True) + 1e-16)
-        u = tf.math.divide(a, tf.linalg.matvec(K, v) + 1e-16)
+        v = tf.math.divide(b, tf.linalg.matvec(K, u, transpose_a = True) + 1e-14)
+        u = tf.math.divide(a, tf.linalg.matvec(K, v) + 1e-14)
         
         if tf.math.reduce_max(tf.math.abs(u)) > tau or tf.math.reduce_max(tf.math.abs(v)) > tau:
             alpha, beta = alpha + reg*tf.math.log(u), beta + reg*tf.math.log(v)

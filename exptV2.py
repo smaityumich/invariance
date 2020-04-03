@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import utils2 as utils
+import utils3 as utils
 import datetime
 from tensorflow import keras
 import cProfile
@@ -277,5 +277,5 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
 
 
 graph = InvarLabelShift(data_train, data_test, num_steps=10000, 
-                        reg_wasserstein=5e-1, reg_var = 5e-0, learning_rate = 2e-4, 
-                        wasserstein_epoch = 50, gamma_wasserstein = 2, sinkhorn_iter = 10)
+                        reg_wasserstein=1, reg_var = 1, learning_rate = 2e-3, 
+                        wasserstein_epoch = 10, gamma_wasserstein = 0.1, sinkhorn_iter = 5)
