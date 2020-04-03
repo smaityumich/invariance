@@ -10,13 +10,13 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
     
     def __init__(self):
         super(InvarianceNNGraph, self).__init__()
-        self.weight = {'weight1': self.add_weight(shape=(64, 32), initializer='random_normal', trainable=True), 
+        self.weight = {'weight1': self.add_weight(shape=(8, 32), initializer='random_normal', trainable=True), 
                         'weight2': self.add_weight(shape=(32, 16), initializer='random_normal', trainable=True), 
-                        'weight3': self.add_weight(shape=(16, 6), initializer='random_normal', trainable=True),
-                        'weight_final': self.add_weight(shape = (6,1), initializer = 'random_normal', trainable = True)}
+                        'weight3': self.add_weight(shape=(16, 3), initializer='random_normal', trainable=True),
+                        'weight_final': self.add_weight(shape = (3,1), initializer = 'random_normal', trainable = True)}
         self.bias = {'bias1': self.add_weight(shape=(32, ), initializer='random_normal', trainable=True), 
                         'bias2': self.add_weight(shape=(16, ), initializer='random_normal', trainable=True), 
-                        'bias3': self.add_weight(shape=(6, ), initializer='random_normal', trainable=True),
+                        'bias3': self.add_weight(shape=(3, ), initializer='random_normal', trainable=True),
                         'bias_final0': self.add_weight(shape = (1,), initializer = 'random_normal', trainable = True), 
                         'bias_final1': self.add_weight(shape = (1,), initializer = 'random_normal', trainable = True)}
         
@@ -31,13 +31,13 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
             out = tf.add(tf.matmul(self.invariant_map(x), self.weight['weight_final']) , self.bias['bias_final0'])
             out = tf.concat([-out, out], axis = 1)
             out = tf.nn.softmax(out)
-            return tf.argmax(out, axis = 1) if predict else out
+            return tf.cast(tf.argmax(out, axis = 1), dtype = tf.float32) if predict else out
             
         elif env == 1:
             out = tf.add(tf.matmul(self.invariant_map(x), self.weight['weight_final']), self.bias['bias_final1'])
             out = tf.concat([-out, out], axis = 1)
             out = tf.nn.softmax(out)
-            return tf.argmax(out, axis = 1) if predict else out
+            return tf.cast(tf.argmax(out, axis = 1), dtype = tf.float32) if predict else out
 
 
 
