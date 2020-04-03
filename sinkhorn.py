@@ -83,6 +83,6 @@ def sinkhorn_dist(x, y, reg, L):
     M = tf.square(dist(x, y))
     a = tf.cast(np.ones((x.shape[0],))/x.shape[0], dtype = tf.float32)
     b = tf.cast(np.ones((y.shape[0],))/y.shape[0], dtype = tf.float32)
-    P = sinkhorn(a, b, M, reg, L)
+    P = sinkhorn_log_stabilized(a, b, M, reg, L)
     return tf.reduce_sum(tf.math.multiply(M, P))
 
