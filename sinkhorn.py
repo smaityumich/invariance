@@ -27,7 +27,7 @@ def sinkhorn(a, b, M,  reg, L):
     M = tf.math.scalar_mul(gamma, M)
     K = tf.exp(-M)
     #K = tf.clip_by_value(K, 1e-4, 10)
-    v = tf.cast(np.ones((b.shape[0],)), dtype = tf.float32) # v_0 = 1_m
+    v = tf.cast(np.ones((b.shape[0],)), dtype = tf.float32)/b.shape[0] # v_0 = 1_m
     for _ in range(L):
         u = tf.math.divide(a, tf.linalg.matvec(K, v) + 1e-16) # u_l = a/(Kv_l)
         v = tf.math.divide(b, tf.linalg.matvec(K, u, transpose_a = True) + 1e-16) # v_{l+1} = b/(K'u_l)
