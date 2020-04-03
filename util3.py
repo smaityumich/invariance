@@ -24,13 +24,21 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
         
     def invariant_map(self, x):
         out = tf.nn.sigmoid(tf.add(tf.matmul(x, self.weight['weight1']), self.bias['bias1']))
-        out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight2']), self.bias['bias2']))
-        out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight3']), self.bias['bias3']))
-        #out = (out - tf.math.reduce_mean(out))/tf.math.reduce_std(out)
+	mean = tf.math.reduce_mean(out, axis = 0)
+        std = tf.math.reduce_std(out, axis = 0)
+        out = (out - mean)/std
+        
+	out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight2']), self.bias['bias2']))
+       	mean = tf.math.reduce_mean(out, axis = 0)
+        std = tf.math.reduce_std(out, axis = 0)
+        out = (out - mean)/std
+        
+	out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight3']), self.bias['bias3']))
         mean = tf.math.reduce_mean(out, axis = 0)
         std = tf.math.reduce_std(out, axis = 0)
         out = (out - mean)/std
-        return out
+        
+	return out
         
     def call(self, x, env = 0, predict = False):
         out = self.invariant_map(x)
@@ -54,7 +62,7 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
 def EntropyLoss(y, prob):
     #prob = tf.concat([1-prob, prob], axis = 1)
     #y = tf.one_hot(y, 2)
-    return -2*tf.reduce_mean(tf.math.multiply(y, tf.math.log(prob+1e-16)))
+    return -2*tf.reduce_mean(tf.math.multiply(y, tf.math.log(prob+1e-14)))
 
 
     
