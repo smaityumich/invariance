@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 25 09:34:10 2020
-
-@author: maity
-"""
-
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
@@ -15,7 +8,7 @@ import datetime
 class InvaranceLabelShift():
     
     def __init__(self, data_train, data_test, batch_size = 150, num_steps = 2000, learning_rate = 0.01, reg_wasserstein = 0.5, gamma_wasserstein = 2, reg_var = 0.2, sinkhorn_iter = 5):
-        self.graph = utils.InvaranceNNGraph()
+        self.graph = utils.InvarianceNNGraph()
         self.data_train = data_train
         self.data_test = data_test
         self.batch_size = batch_size
