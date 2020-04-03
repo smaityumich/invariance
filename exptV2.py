@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import utils5 as utils
+import utils2 as utils
 import datetime
 from tensorflow import keras
 import cProfile
@@ -21,7 +21,7 @@ def spurious_label(y, p):
 
 
 y0 = np.random.binomial(1, 0.5, (1200,)) ##Bayes error 0.14
-y1 = np.random.binomial(1, 0.5, (1500,))
+y1 = np.random.binomial(1, 0.7, (1500,))
 #f = lambda y: np.random.normal(1, 1, (4,)) if y else np.random.normal(0, 1, (4,))
 x0_inv = [informative_feature(spurious_label(y, 0.25)) for y in y0]
 x1_inv = [informative_feature(spurious_label(y, 0.25)) for y in y1]
@@ -41,7 +41,7 @@ data_train = [[x0, y0], [x1, y1]]
 
 
 y0 = np.random.binomial(1, 0.5, (1000,))
-y1 = np.random.binomial(1, 0.5, (1000,))
+y1 = np.random.binomial(1, 0.7, (1000,))
 x0_inv = [informative_feature(spurious_label(y, 0.25)) for y in y0]
 x1_inv = [informative_feature(spurious_label(y, 0.25)) for y in y1]
 x0_non_inv = [informative_feature(spurious_label(y, 0.8)) for y in y0]
@@ -103,8 +103,8 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
 
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     parameter = f'_num_steps_{num_steps}_lr_{learning_rate}_reg_wasserstein_{reg_wasserstein}_wasserstein_epoch_{wasserstein_epoch}_reg_var_{reg_var}_gamma_wasserstein_{gamma_wasserstein}_sinkhorn_iter_{sinkhorn_iter}'
-    train_log_dir = 'logs/' + current_time + parameter + '/train'
-    test_log_dir = 'logs/' + current_time + parameter + '/test'
+    train_log_dir = 'logs2/' + current_time + parameter + '/train'
+    test_log_dir = 'logs2/' + current_time + parameter + '/test'
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
     test_summary_writer = tf.summary.create_file_writer(test_log_dir)
     
@@ -277,5 +277,5 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
 
 
 graph = InvarLabelShift(data_train, data_test, num_steps=10000, 
-                        reg_wasserstein=1, reg_var = 1e-2, learning_rate = 2e-3, 
-                        wasserstein_epoch = 50, gamma_wasserstein = 1, sinkhorn_iter = 5)
+                        reg_wasserstein=5e-1, reg_var = 5e-0, learning_rate = 2e-4, 
+                        wasserstein_epoch = 50, gamma_wasserstein = 2, sinkhorn_iter = 10)

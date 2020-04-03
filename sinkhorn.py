@@ -24,13 +24,13 @@ def sinkhorn_map(a, b, M,  reg, L):
     return: transportaion probability map;  tensor of shape (n, m)
     '''
     gamma = tf.cast(1/reg, dtype=tf.float32)
-    M = tf.clip_by_value(tf.math.scalar_mul(gamma, M), 1e-4, 10)
+    M = tf.clip_by_value(tf.math.scalar_mul(gamma, M), 1e-3, 5)
     K = tf.exp(-M)
     #K = tf.clip_by_value(K, 1e-4, 10)
-    v = tf.cast(np.ones((b.shape[0],)), dtype = tf.float32) # v_0 = 1_m
+    v = tf.cast(np.ones((b.shape[0],)), dtype = tf.float32)/b.shape[0] # v_0 = 1_m
     for _ in range(L):
-        u = tf.math.divide(a, tf.linalg.matvec(K, v)) # u_l = a/(Kv_l)
-        v = tf.math.divide(b, tf.linalg.matvec(K, u, transpose_a = True)) # v_{l+1} = b/(K'u_l)
+        u = tf.math.divide(a, tf.linalg.matvec(K, v) + 1e-10) # u_l = a/(Kv_l)
+        v = tf.math.divide(b, tf.linalg.matvec(K, u, transpose_a = True) + 1e-10) # v_{l+1} = b/(K'u_l)
     P = tf.linalg.matmul(tf.linalg.tensor_diag(u), K)
     P = tf.linalg.matmul(P, tf.linalg.tensor_diag(v)) # P = diag(u_L) K diag(v_{L+1})
     return P
