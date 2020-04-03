@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import numpy as np
-=======
 import tensorflow as tf
 from expt import *
 import numpy as np
@@ -30,7 +27,7 @@ x1 = tf.cast(x1, dtype = tf.float32)
 
 data_test = [[x0, y0], [x1, y1]]
 
-inv = InvaranceLabelShift(data_train, data_test)
+#inv = InvaranceLabelShift(data_train, data_test)
 
 
         
@@ -38,4 +35,3 @@ inv = InvaranceLabelShift(data_train, data_test)
     
 
 
->>>>>>> b4b309bb25a4d3afeb3729fe44f64317871b37b1
