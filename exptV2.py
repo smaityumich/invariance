@@ -269,13 +269,15 @@ graph = InvarLabelShift(data_train, data_test, num_steps=10,
 
 accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr}
 accuracy['train'] = dict()
-for index, (x, y) in data_train:
+for index, data in data_train:
+    x, y = data[0], data[1]
     predict = graph(x, env = index, predict = True)
     accuracy['train'][index] = tf.reduce_mean(tf.cast(tf.equal(y, predict), dtype = tf.float32))
 
 
 accuracy['test'] = dict()
-for index, (x, y) in data_test:
+for index, data in data_test:
+    x, y = data[0], data[1]
     predict = graph(x, env = index, predict = True)
     accuracy['test'][index] = tf.reduce_mean(tf.cast(tf.equal(y, predict), dtype = tf.float32))
 
