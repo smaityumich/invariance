@@ -20,13 +20,21 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
                         'bias_final1': self.add_weight(shape = (1,), initializer = initializer, trainable = True)}
         
     def invariant_map(self, x):
-        out = tf.nn.relu(tf.add(tf.matmul(x, self.weight['weight1']), self.bias['bias1']))
-        out = tf.nn.relu(tf.add(tf.matmul(out, self.weight['weight2']), self.bias['bias2']))
-        #out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight3']), self.bias['bias3']))
-        out = tf.nn.relu(tf.add(tf.matmul(out, self.weight['weight3']), self.bias['bias3']))
-        #out = tf.math.log(out+1)
-        #out = tf.math.log(out+1)
-        out = (out-tf.math.reduce_mean(out))/tf.math.reduce_std(out)
+        out = tf.nn.sigmoid(tf.add(tf.matmul(x, self.weight['weight1']), self.bias['bias1']))
+        mean = tf.math.reduce_mean(out, axis = 0)
+        std = tf.math.reduce_std(out, axis = 0)
+        out = (out - mean)/std
+        
+        out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight2']), self.bias['bias2']))
+       	mean = tf.math.reduce_mean(out, axis = 0)
+        std = tf.math.reduce_std(out, axis = 0)
+        out = (out - mean)/std
+        
+        out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight3']), self.bias['bias3']))
+        mean = tf.math.reduce_mean(out, axis = 0)
+        std = tf.math.reduce_std(out, axis = 0)
+        out = (out - mean)/std
+
         return out
         
     def call(self, x, env = 0, predict = False):

@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import util3 as utils
+import utils2 as utils
 import datetime
 from tensorflow import keras
 import matplotlib.pyplot as plt
