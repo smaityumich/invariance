@@ -4,9 +4,11 @@ import numpy as np
 import util3 as utils
 import datetime
 from tensorflow import keras
-import cProfile
 import matplotlib.pyplot as plt
-import io
+import sys
+import json
+
+
 
 
 
@@ -39,6 +41,8 @@ x1 = tf.cast(x1, dtype = tf.float32)
 data_train = [[x0, y0], [x1, y1]]
 
 
+
+## Test data
 
 y0 = np.random.binomial(1, 0.5, (1000,))
 y1 = np.random.binomial(1, 0.7, (1000,))
@@ -103,8 +107,8 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
 
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     parameter = f'_num_steps_{num_steps}_lr_{learning_rate}_reg_wasserstein_{reg_wasserstein}_wasserstein_epoch_{wasserstein_epoch}_reg_var_{reg_var}_gamma_wasserstein_{gamma_wasserstein}_sinkhorn_iter_{sinkhorn_iter}'
-    train_log_dir = 'logs2/' + current_time + parameter + '/train'
-    test_log_dir = 'logs2/' + current_time + parameter + '/test'
+    train_log_dir = 'logs/' + current_time + parameter + '/train'
+    test_log_dir = 'logs/' + current_time + parameter + '/test'
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
     test_summary_writer = tf.summary.create_file_writer(test_log_dir)
     
@@ -114,23 +118,6 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
         return tf.reduce_mean(acc)
 
     
-    def plot_to_image(figure):
-        """Converts the matplotlib plot specified by 'figure' to a PNG image and
-          returns it. The supplied figure is closed and inaccessible after this call."""
-        # Save the plot to a PNG in memory.
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        # Closing the figure prevents it from being displayed directly inside
-        # the notebook.
-        plt.close(figure)
-        buf.seek(0)
-        # Convert PNG buffer to TF image
-        image = tf.image.decode_png(buf.getvalue(), channels=4)
-        # Add the batch dimension
-        image = tf.expand_dims(image, 0)
-        return image
-
-
     
     def train_step(data_train_epoch, full_data, step):
         with tf.GradientTape() as g:
@@ -274,8 +261,25 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
     return graph
 
 
+reg_wasserstein, reg_var, lr, gamma_wasserstein = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
+
+graph = InvarLabelShift(data_train, data_test, num_steps=10, 
+                        reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
+                        wasserstein_epoch = 10, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = 5)
+
+accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr}
+accuracy['train'] = dict()
+for index, (x, y) in data_train:
+    predict = graph(x, env = index, predict = True)
+    accuracy['train'][index] = tf.reduce_mean(tf.cast(tf.equal(y, predict), dtype = tf.float32))
 
 
-graph = InvarLabelShift(data_train, data_test, num_steps=10000, 
-                        reg_wasserstein=5e-1, reg_var = 1e-1, learning_rate = 2e-3, 
-                        wasserstein_epoch = 10, gamma_wasserstein = 1, sinkhorn_iter = 5)
+accuracy['test'] = dict()
+for index, (x, y) in data_test:
+    predict = graph(x, env = index, predict = True)
+    accuracy['test'][index] = tf.reduce_mean(tf.cast(tf.equal(y, predict), dtype = tf.float32))
+
+with open('out.json', 'a') as f:
+    json.dump(accuracy, f)
+
+
