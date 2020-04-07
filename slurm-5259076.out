@@ -1,0 +1,412 @@
+2020-04-06 21:42:15.537255: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libnvinfer.so.6'; dlerror: libnvinfer.so.6: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-04-06 21:42:15.537684: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libnvinfer_plugin.so.6'; dlerror: libnvinfer_plugin.so.6: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-04-06 21:42:15.537697: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:30] Cannot dlopen some TensorRT libraries. If you would like to use Nvidia GPU with TensorRT, please make sure the missing libraries mentioned above are installed properly.
+2020-04-06 21:42:18.135522: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-04-06 21:42:18.135571: E tensorflow/stream_executor/cuda/cuda_driver.cc:351] failed call to cuInit: UNKNOWN ERROR (303)
+2020-04-06 21:42:18.135598: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (gl3022.arc-ts.umich.edu): /proc/driver/nvidia/version does not exist
+2020-04-06 21:42:18.135975: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-04-06 21:42:18.144006: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 3000000000 Hz
+2020-04-06 21:42:18.144124: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x562a6ae6ce90 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-04-06 21:42:18.144134: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Done step 50
+
+Done step 100
+
+Done step 150
+
+Done step 200
+
+Done step 250
+
+Done step 300
+
+Done step 350
+
+Done step 400
+
+Done step 450
+
+Done step 500
+
+Done step 550
+
+Done step 600
+
+Done step 650
+
+Done step 700
+
+Done step 750
+
+Done step 800
+
+Done step 850
+
+Done step 900
+
+Done step 950
+
+Done step 1000
+
+Done step 1050
+
+Done step 1100
+
+Done step 1150
+
+Done step 1200
+
+Done step 1250
+
+Done step 1300
+
+Done step 1350
+
+Done step 1400
+
+Done step 1450
+
+Done step 1500
+
+Done step 1550
+
+Done step 1600
+
+Done step 1650
+
+Done step 1700
+
+Done step 1750
+
+Done step 1800
+
+Done step 1850
+
+Done step 1900
+
+Done step 1950
+
+Done step 2000
+
+Done step 2050
+
+Done step 2100
+
+Done step 2150
+
+Done step 2200
+
+Done step 2250
+
+Done step 2300
+
+Done step 2350
+
+Done step 2400
+
+Done step 2450
+
+Done step 2500
+
+Done step 2550
+
+Done step 2600
+
+Done step 2650
+
+Done step 2700
+
+Done step 2750
+
+Done step 2800
+
+Done step 2850
+
+Done step 2900
+
+Done step 2950
+
+Done step 3000
+
+Done step 3050
+
+Done step 3100
+
+Done step 3150
+
+Done step 3200
+
+Done step 3250
+
+Done step 3300
+
+Done step 3350
+
+Done step 3400
+
+Done step 3450
+
+Done step 3500
+
+Done step 3550
+
+Done step 3600
+
+Done step 3650
+
+Done step 3700
+
+Done step 3750
+
+Done step 3800
+
+Done step 3850
+
+Done step 3900
+
+Done step 3950
+
+Done step 4000
+
+Done step 4050
+
+Done step 4100
+
+Done step 4150
+
+Done step 4200
+
+Done step 4250
+
+Done step 4300
+
+Done step 4350
+
+Done step 4400
+
+Done step 4450
+
+Done step 4500
+
+Done step 4550
+
+Done step 4600
+
+Done step 4650
+
+Done step 4700
+
+Done step 4750
+
+Done step 4800
+
+Done step 4850
+
+Done step 4900
+
+Done step 4950
+
+Done step 5000
+
+Done step 5050
+
+Done step 5100
+
+Done step 5150
+
+Done step 5200
+
+Done step 5250
+
+Done step 5300
+
+Done step 5350
+
+Done step 5400
+
+Done step 5450
+
+Done step 5500
+
+Done step 5550
+
+Done step 5600
+
+Done step 5650
+
+Done step 5700
+
+Done step 5750
+
+Done step 5800
+
+Done step 5850
+
+Done step 5900
+
+Done step 5950
+
+Done step 6000
+
+Done step 6050
+
+Done step 6100
+
+Done step 6150
+
+Done step 6200
+
+Done step 6250
+
+Done step 6300
+
+Done step 6350
+
+Done step 6400
+
+Done step 6450
+
+Done step 6500
+
+Done step 6550
+
+Done step 6600
+
+Done step 6650
+
+Done step 6700
+
+Done step 6750
+
+Done step 6800
+
+Done step 6850
+
+Done step 6900
+
+Done step 6950
+
+Done step 7000
+
+Done step 7050
+
+Done step 7100
+
+Done step 7150
+
+Done step 7200
+
+Done step 7250
+
+Done step 7300
+
+Done step 7350
+
+Done step 7400
+
+Done step 7450
+
+Done step 7500
+
+Done step 7550
+
+Done step 7600
+
+Done step 7650
+
+Done step 7700
+
+Done step 7750
+
+Done step 7800
+
+Done step 7850
+
+Done step 7900
+
+Done step 7950
+
+Done step 8000
+
+Done step 8050
+
+Done step 8100
+
+Done step 8150
+
+Done step 8200
+
+Done step 8250
+
+Done step 8300
+
+Done step 8350
+
+Done step 8400
+
+Done step 8450
+
+Done step 8500
+
+Done step 8550
+
+Done step 8600
+
+Done step 8650
+
+Done step 8700
+
+Done step 8750
+
+Done step 8800
+
+Done step 8850
+
+Done step 8900
+
+Done step 8950
+
+Done step 9000
+
+Done step 9050
+
+Done step 9100
+
+Done step 9150
+
+Done step 9200
+
+Done step 9250
+
+Done step 9300
+
+Done step 9350
+
+Done step 9400
+
+Done step 9450
+
+Done step 9500
+
+Done step 9550
+
+Done step 9600
+
+Done step 9650
+
+Done step 9700
+
+Done step 9750
+
+Done step 9800
+
+Done step 9850
+
+Done step 9900
+
+Done step 9950
+
+Done step 10000
+

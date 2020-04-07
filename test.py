@@ -61,26 +61,29 @@ data_test = [[x0, y0], [x1, y1]]
 
 
 reg_wasserstein, reg_var, lr, gamma_wasserstein = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
-
-fitted_graph = InvarLabelShift(data_train, data_test, num_steps=10, 
+num_steps = 10000
+wasserstein_epoch = 10
+sinkhorn_iter = 5
+fitted_graph = InvarLabelShift(data_train, data_test, num_steps=num_steps, 
                         reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
-                        wasserstein_epoch = 10, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = 5)
+                        wasserstein_epoch = wasserstein_epoch, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = sinkhorn_iter)
 
 
 
-accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr}
+current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr, 'datetime': current_time, 'num-steps': num_steps, 'wasserstein-epoch': wasserstein_epoch, 'sinkhorn-iteration': sinkhorn_iter}
 accuracy['train'] = dict()
-for index, data in data_train:
+for index, data in enumerate(data_train):
     x, y = data[0], data[1]
     predict = fitted_graph(x, env = index, predict = True)
-    accuracy['train'][index] = tf.reduce_mean(tf.cast(tf.equal(y, predict), dtype = tf.float32))
+    accuracy['train'][index] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
 
 accuracy['test'] = dict()
-for index, data in data_test:
+for index, data in enumerate(data_test):
     x, y = data[0], data[1]
     predict = fitted_graph(x, env = index, predict = True)
-    accuracy['test'][index] = tf.reduce_mean(tf.cast(tf.equal(y, predict), dtype = tf.float32))
+    accuracy['test'][index] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
 with open('out.json', 'a') as f:
     json.dump(accuracy, f)
