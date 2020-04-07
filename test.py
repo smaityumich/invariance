@@ -60,9 +60,8 @@ x1 = tf.cast(x1, dtype = tf.float32)
 data_test = [[x0, y0], [x1, y1]]
 
 
-reg_wasserstein, reg_var, lr, gamma_wasserstein = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
+reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5]))
 num_steps = 10000
-wasserstein_epoch = 10
 sinkhorn_iter = 5
 fitted_graph = InvarLabelShift(data_train, data_test, num_steps=num_steps, 
                         reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 

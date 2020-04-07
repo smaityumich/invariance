@@ -7,9 +7,9 @@ import itertools
 job_file = 'submit.sbat'
 
 # Experiment 1
-reg_w = np.array([1e1, 1, 1e-1, 1e-2])
-reg_v = np.array([1e1, 1, 1e-1, 1e-2])
-lrs = np.array([1e-2, 1e-3, 1e-4])
+reg_w = np.array(range(1, 11))/200
+reg_v = np.array([1e1, 1])
+lrs = np.array([4e-3])
 
 
 
@@ -29,7 +29,7 @@ for reg_wasserstein, reg_var, lr in itertools.product(reg_w, reg_v, lrs):
         fh.writelines("#SBATCH --mail-type=NONE\n")
         fh.writelines("#SBATCH --mail-user=smaity@umich.edu\n")
         fh.writelines('#SBATCH --partition=standard\n')
-        fh.writelines(f"python3 test.py {reg_wasserstein} {reg_var} {lr} 1")
+        fh.writelines(f"python3 test.py {reg_wasserstein} {reg_var} {lr} 1 50")
 
     os.system("sbatch %s" %job_file)
     os.system(f'rm {job_file}')
