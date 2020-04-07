@@ -62,6 +62,6 @@ data_test = [[x0, y0], [x1, y1]]
 
 #reg_wasserstein, reg_var, lr, gamma_wasserstein = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
 
-graph = InvarLabelShift(data_train, data_test, num_steps=10, 
+fitted_graph = InvarLabelShift(data_train, data_test, num_steps=10, 
                         reg_wasserstein=1e-1, reg_var = 1e-1, learning_rate = 1e-3, 
                         wasserstein_epoch = 10, gamma_wasserstein = 1, sinkhorn_iter = 5)

@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import graph
+import nn_graph
 import datetime
 from tensorflow import keras
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
                     gamma_wasserstein = 1e-2, 
                     reg_var = 10, sinkhorn_iter = 5, clip_grad = 10):
-    graph = graph.InvarianceNNGraph()
+    graph = nn_graph.InvarianceNNGraph()
     batch_data = []
     for env in data_train:
         batch = tf.data.Dataset.from_tensor_slices((env[0], env[1]))
@@ -73,7 +73,7 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
             loss = tf.cast(0, dtype = tf.float32)
             for index, (x, y) in enumerate(data_train_epoch):
                 probs = graph(x, env = index)
-                loss = loss + graph.EntropyLoss(y, probs)
+                loss = loss + nn_graph.EntropyLoss(y, probs)
             loss_train = loss
             WD = [0,0]
             if step % wasserstein_epoch == 0:
@@ -134,7 +134,7 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
         loss = tf.cast(0, dtype = tf.float32)
         for index, (x, y) in enumerate(data_test_epoch):
             probs = graph(x, env = index)
-            loss = loss + graph.EntropyLoss(y, probs)
+            loss = loss + nn_graph.EntropyLoss(y, probs)
         test_loss(loss)
             
         accuracy_test = tf.cast(0, dtype = tf.float32)
@@ -208,3 +208,4 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
             print(f'Done step {step}\n')
             
     return graph
+
