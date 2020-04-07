@@ -55,7 +55,8 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
     
 
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    parameter = f'_num_steps_{num_steps}_lr_{learning_rate}_reg_wasserstein_{reg_wasserstein}_wasserstein_epoch_{wasserstein_epoch}_reg_var_{reg_var}_gamma_wasserstein_{gamma_wasserstein}_sinkhorn_iter_{sinkhorn_iter}'
+    expt_id = np.random.randint(1000000)
+    parameter = f'_expt-id_{expt_id}_num_steps_{num_steps}_lr_{learning_rate}_reg_wasserstein_{reg_wasserstein}_wasserstein_epoch_{wasserstein_epoch}_reg_var_{reg_var}_gamma_wasserstein_{gamma_wasserstein}_sinkhorn_iter_{sinkhorn_iter}'
     train_log_dir = 'logs/' + current_time + parameter + '/train'
     test_log_dir = 'logs/' + current_time + parameter + '/test'
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
@@ -207,5 +208,5 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
         if step % 50 == 0:
             print(f'Done step {step}\n')
             
-    return graph, current_time
+    return graph, current_time, expt_id
 

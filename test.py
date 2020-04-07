@@ -63,7 +63,7 @@ data_test = [[x0, y0], [x1, y1]]
 reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5]))
 num_steps = 10000
 sinkhorn_iter = 5
-fitted_graph, current_time = InvarLabelShift(data_train, data_test, num_steps=num_steps, 
+fitted_graph, current_time, expt_id = InvarLabelShift(data_train, data_test, num_steps=num_steps, 
                         reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
                         wasserstein_epoch = wasserstein_epoch, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = sinkhorn_iter)
 
@@ -71,7 +71,7 @@ fitted_graph, current_time = InvarLabelShift(data_train, data_test, num_steps=nu
 
 accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr, 'datetime': current_time, 
             'num-steps': num_steps, 'wasserstein-epoch': wasserstein_epoch, 'sinkhorn-iteration': sinkhorn_iter}
-accuracy['id'] = np.random.randint(1000000)
+accuracy['id'] = expt_id
 accuracy['train'] = dict()
 for index, data in enumerate(data_train):
     x, y = data[0], data[1]
