@@ -207,5 +207,5 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
         if step % 50 == 0:
             print(f'Done step {step}\n')
             
-    return graph
+    return graph, current_time
 
