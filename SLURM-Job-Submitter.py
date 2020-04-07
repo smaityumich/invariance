@@ -7,14 +7,15 @@ import itertools
 job_file = 'submit.sbat'
 
 # Experiment 1
-reg_w = np.array(range(1, 11))/200
-reg_v = np.array([1e1, 1])
-lrs = np.array([4e-3])
+reg_w = np.array([0.01])
+reg_v = np.array([10])
+lrs = np.array([5e-3])
+iters = range(100)
 
 
 
 
-for reg_wasserstein, reg_var, lr in itertools.product(reg_w, reg_v, lrs):
+for reg_wasserstein, reg_var, lr, _ in itertools.product(reg_w, reg_v, lrs, iters):
     os.system(f'touch {job_file}')
 
         
