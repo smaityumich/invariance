@@ -86,6 +86,6 @@ for index, data in enumerate(data_test):
     accuracy['test'][index] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
 with open('out.json', 'a') as f:
-    json.dump(accuracy, f)
+    f.writelines(str(accuracy)+'\n')
 
 
