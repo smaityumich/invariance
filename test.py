@@ -69,7 +69,9 @@ fitted_graph, current_time = InvarLabelShift(data_train, data_test, num_steps=nu
 
 
 
-accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr, 'datetime': current_time, 'num-steps': num_steps, 'wasserstein-epoch': wasserstein_epoch, 'sinkhorn-iteration': sinkhorn_iter}
+accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr, 'datetime': current_time, 
+            'num-steps': num_steps, 'wasserstein-epoch': wasserstein_epoch, 'sinkhorn-iteration': sinkhorn_iter}
+accuracy['id'] = np.random.randint(1000000)
 accuracy['train'] = dict()
 for index, data in enumerate(data_train):
     x, y = data[0], data[1]
