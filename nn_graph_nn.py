@@ -13,7 +13,7 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
         self.weight = {'weight1': self.add_weight(shape=(8, 32), initializer=initializer, trainable=True), 
                         'weight2': self.add_weight(shape=(32, 16), initializer=initializer, trainable=True), 
                         'weight3': self.add_weight(shape=(16, 4), initializer=initializer, trainable=True), 
-                        'weight4': self.add_weight(shape=(16, 1), initializer=initializer, trainable=True)}
+                        'weight4': self.add_weight(shape=(4, 1), initializer=initializer, trainable=True)}
         self.bias = {'bias1': self.add_weight(shape=(32, ), initializer=initializer, trainable=True), 
                         'bias2': self.add_weight(shape=(16, ), initializer=initializer, trainable=True), 
                         'bias3': self.add_weight(shape=(4, ), initializer=initializer, trainable=True),
