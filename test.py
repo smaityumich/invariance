@@ -13,7 +13,7 @@ import json
 ## Train Data
 
 def informative_feature(y):
-    return np.random.normal(1, 1, (4,)) if y else np.random.normal(0, 1, (4,))
+    return np.random.normal(3, 1, (4,)) if y else np.random.normal(0, 1, (4,))
 
 def spurious_label(y, p):
     z = np.random.random()
@@ -85,7 +85,7 @@ for index, data in enumerate(data_test):
     predict = fitted_graph(x, env = index, predict = True)
     accuracy['test'][index] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
-with open('out3.json', 'a') as f:
+with open('out4.json', 'a') as f:
     f.writelines(str(accuracy)+'\n')
 
 
