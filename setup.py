@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import nn_graph_nn as nn_graph
+import nn_graph_logistic as nn_graph
 import datetime
 from tensorflow import keras
 import matplotlib.pyplot as plt
@@ -15,8 +15,8 @@ import json
 def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500, 
                     learning_rate = 1e-5, 
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
-                    gamma_wasserstein = 1e-2, 
-                    reg_var = 10, sinkhorn_iter = 5, clip_grad = 10):
+                    gamma_wasserstein = 1e-2, wasserstein_start_step = 2000,
+                    reg_var = 10, sinkhorn_iter = 5, clip_grad = 40):
     graph = nn_graph.InvarianceNNGraph()
     batch_data = []
     for env in data_train:
@@ -77,7 +77,7 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
                 loss = loss + nn_graph.EntropyLoss(y, probs)
             loss_train = loss
             WD = [0,0]
-            if step % wasserstein_epoch == 0:
+            if step % wasserstein_epoch == 0 and step > wasserstein_start_step:
                 for label in [0,1]:
                     conditional_data = [env[0][env[1][:, 1] == label] for env in full_data]
                     wasserstein_dist = sh.sinkhorn_dist(graph.invariant_map(conditional_data[0]), 
@@ -147,7 +147,7 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
         accuracy_test = accuracy_test/2
         test_accuracy(accuracy_test)
         WD = [0,0]
-        if step % wasserstein_epoch == 0:
+        if step % wasserstein_epoch == 0 and step > wasserstein_start_step:
                 for label in [0,1]:
                     conditional_data = [env[0][env[1][:, 1] == label] for env in full_data]
                     wasserstein_dist = sh.sinkhorn_dist(graph.invariant_map(conditional_data[0]), 
