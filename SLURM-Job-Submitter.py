@@ -12,7 +12,7 @@ reg_v = np.array([0.01, 0.1, 1, 10])
 lrs = np.array([1e-2, 1e-3, 1e-4])
 iters = range(1)
 
-os.system('touch out2.json')
+os.system('touch out3.json')
 
 
 
