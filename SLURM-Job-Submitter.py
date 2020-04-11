@@ -7,13 +7,13 @@ import itertools
 job_file = 'submit.sbat'
 
 # Experiment 1
-reg_w = np.array([0.01, 0.02, 0.05, 0.07, 0.1, 0.25, 0.5, 0.75, 1, 10])
+reg_w = range(1, 11)
 reg_v = [0]
 #reg_v = np.array([0.01, 0.1, 1, 10])
-lrs = np.array([1e-3, 5e-4, 1e-4])
+lrs = np.array([1e-3, 1e-4])
 iters = range(1)
 
-os.system('touch out4.json')
+os.system('touch out5.json')
 
 
 
