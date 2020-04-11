@@ -165,7 +165,8 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
     for step, data in enumerate(zip(*batch_data), 1):
         batch_data_train = data[:2]
         batch_data_test = data[2:]
-        wd0_tr, wd1_tr = train_step(batch_data_train, data_train, step)
+        #wd0_tr, wd1_tr = train_step(batch_data_train, data_train, step)
+        _, _ = train_step(batch_data_train, batch_data_train, step)
         with train_summary_writer.as_default():
             tf.summary.scalar('loss', train_loss.result(), step=step)
             tf.summary.scalar('accuracy', train_accuracy.result(), step=step)
@@ -175,7 +176,8 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
             for y in [0,1]:
                 tf.summary.scalar('wasserstein_y:'+str(y), train_wasserstein_y[y].result(), step = step)   
         
-        w0, w1 = test_step(batch_data_test, data_test, step)
+        #w0, w1 = test_step(batch_data_test, data_test, step)
+        _, _ = test_step(batch_data_test, batch_data_test, step)
       
         with test_summary_writer.as_default():
             tf.summary.scalar('loss', test_loss.result(), step=step)
