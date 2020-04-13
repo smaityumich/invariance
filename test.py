@@ -13,7 +13,7 @@ import json
 ## Train Data
 
 def informative_feature(y):
-    return np.random.normal(3, 1, (4,)) if y else np.random.normal(0, 1, (4,))
+    return np.random.normal(1, 1, (4,)) if y else np.random.normal(0, 1, (4,))
 
 def spurious_label(y, p):
     z = np.random.random()
