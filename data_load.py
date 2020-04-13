@@ -57,7 +57,7 @@ def color_digits(X, y, color_noise, downsample=True):
     return colored_X
     
     
-def make_environments(data=None, downsample=True, path=None):
+def make_environments(data=None, downsample=True, path=None, red_0_corrs = None):
     if data is None:
         X_train, y_train, X_test, y_test = read_lecun_mnist(path=path, flatten=False)
     else:
@@ -66,7 +66,8 @@ def make_environments(data=None, downsample=True, path=None):
     y_train = binarize(y_train)
     y_test = binarize(y_test)
     
-    red_0_corrs = [0.8, 0.9]
+    if red_0_corrs == None: 
+        red_0_corrs = [0.8, 0.9]
     
     n_envs = len(red_0_corrs)
     idx_order = list(range(X_train.shape[0]))

@@ -13,7 +13,7 @@ reg_v = [0]
 lrs = np.array([1e-3, 1e-4])
 iters = range(1)
 
-os.system('touch out6.json')
+os.system('touch out_mnist1.json')
 
 
 

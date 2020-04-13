@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import nn_two_layers as nn_graph
+import nn_graph_logistic as nn_graph
 import datetime
 from tensorflow import keras
 import matplotlib.pyplot as plt
