@@ -13,7 +13,22 @@ from data_load import *
 
 np.random.seed(1)
 data_train, _ = make_environments(path = 'MNIST', red_0_corrs = [0.7, 0.9])
+x0, y0 = data_train[0]
+x1, y1 = data_train[1]
+y0 = tf.one_hot(y0, 2)
+y1 = tf.one_hot(y1, 2)
+x0 = tf.cast(x0, dtype = tf.float32)
+x1 = tf.cast(x1, dtype = tf.float32)
+data_train = [[x0, y0], [x1, y1]]
+
 data_test, _ = make_environments(path = 'MNIST', red_0_corrs = [0.3, 0.1])
+x0, y0 = data_test[0]
+x1, y1 = data_test[1]
+y0 = tf.one_hot(y0, 2)
+y1 = tf.one_hot(y1, 2)
+x0 = tf.cast(x0, dtype = tf.float32)
+x1 = tf.cast(x1, dtype = tf.float32)
+data_test = [[x0, y0], [x1, y1]]
 
 reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5]))
 num_steps = 12000
