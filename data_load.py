@@ -31,7 +31,7 @@ def read_lecun_mnist(path=None, flatten=True):
     # y_train = one_hot.transform(y_train.reshape(-1,1))
     # y_test = one_hot.transform(y_test.reshape(-1,1))
     
-    idx_train = np.random.choice(X_train.shape[0], size=10000, replace=False)
+    idx_train = np.random.choice(X_train.shape[0], size=12000, replace=False)
     return X_train[idx_train], y_train[idx_train], X_test, y_test
     # return X_train, y_train, X_test, y_test
 

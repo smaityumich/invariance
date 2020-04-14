@@ -9,7 +9,14 @@ import sys
 import json
 from data_load import *
 
+x0, y0, _, _ = read_lecun_mnist(path = 'MNIST')
+x1, y1, _, _ = read_lecun_mnist(path = 'MNIST')
 
+x0_tr, x0_test = x0[:10001, :], x0[10001:, :]
+x1_tr, x1_test = x1[:10001, :], x1[10001:, :]
+
+y0_tr, y0_test = y0[:10001], y0[10001:]
+y1_tr, y1_test = y1[:10001], y1[10001:]
 
 np.random.seed(1)
 data_train, _ = make_environments(path = 'MNIST', red_0_corrs = [0.7, 0.9])
