@@ -45,7 +45,7 @@ data_test = [[x0_test, y0_test], [x1_test, y1_test]]
 #data_test = [[x0, y0], [x1, y1]]
 
 reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5]))
-num_steps = 120
+num_steps = 15000
 sinkhorn_iter = 5
 fitted_graph, current_time, expt_id = InvarLabelShift(data_train, data_test, num_steps=num_steps, 
                         reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
