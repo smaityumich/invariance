@@ -9,7 +9,7 @@ import sys
 import json
 from mnist_data_load import *
 
-np.random.seed(1)
+#np.random.seed(1)
 x0_train, y0_train, x0_test, y0_test = make_environment(path='MNIST', red_0_corrs=[0.1, 0.9])
 x1_train, y1_train, x1_test, y1_test = make_environment(path='MNIST', red_0_corrs=[0.3, 0.7])
 
