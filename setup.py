@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import utils2 as utils
+import nn_graph_logistic as nn_graph
 import datetime
 from tensorflow import keras
 import matplotlib.pyplot as plt
@@ -12,63 +12,12 @@ import json
 
 
 
-## Train Data
-
-def informative_feature(y):
-    return np.random.normal(1, 1, (4,)) if y else np.random.normal(0, 1, (4,))
-
-def spurious_label(y, p):
-    z = np.random.random()
-    return y if z<p else 1-y #np.random.binomial(1, 0.5) #1-y
-
-
-y0 = np.random.binomial(1, 0.5, (1200,)) ##Bayes error 0.14
-y1 = np.random.binomial(1, 0.7, (1500,))
-#f = lambda y: np.random.normal(1, 1, (4,)) if y else np.random.normal(0, 1, (4,))
-x0_inv = [informative_feature(spurious_label(y, 0.25)) for y in y0]
-x1_inv = [informative_feature(spurious_label(y, 0.25)) for y in y1]
-x0_non_inv = [informative_feature(spurious_label(y, 0.2)) for y in y0]
-x1_non_inv = [informative_feature(spurious_label(y, 0.1)) for y in y1]
-x0 = np.concatenate((x0_inv, x0_non_inv), axis = 1)
-x1 = np.concatenate((x1_inv, x1_non_inv), axis = 1)
-#x0 = np.concatenate((x0, np.random.normal(6, 1, (1200, 60))), axis = 1)
-#x1 = np.concatenate((x1, np.random.normal(2, 1, (1500, 60))), axis = 1)
-y0 = tf.one_hot(y0, 2)
-y1 = tf.one_hot(y1, 2)
-x0 = tf.cast(x0, dtype = tf.float32)
-x1 = tf.cast(x1, dtype = tf.float32)
-
-data_train = [[x0, y0], [x1, y1]]
-
-
-
-## Test data
-
-y0 = np.random.binomial(1, 0.5, (1000,))
-y1 = np.random.binomial(1, 0.7, (1000,))
-x0_inv = [informative_feature(spurious_label(y, 0.25)) for y in y0]
-x1_inv = [informative_feature(spurious_label(y, 0.25)) for y in y1]
-x0_non_inv = [informative_feature(spurious_label(y, 0.8)) for y in y0]
-x1_non_inv = [informative_feature(spurious_label(y, 0.9)) for y in y1]
-x0 = np.concatenate((x0_inv, x0_non_inv), axis = 1)
-x1 = np.concatenate((x1_inv, x1_non_inv), axis = 1)
-#x0 = np.concatenate((x0, np.random.normal(9, 1, (1000, 60))), axis = 1)
-#x1 = np.concatenate((x1, np.random.normal(7, 1, (1000, 60))), axis = 1)
-y0 = tf.one_hot(y0, 2)
-y1 = tf.one_hot(y1, 2)
-x0 = tf.cast(x0, dtype=tf.float32)
-x1 = tf.cast(x1, dtype = tf.float32)
-
-data_test = [[x0, y0], [x1, y1]]
-
-
-
 def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500, 
                     learning_rate = 1e-5, 
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
-                    gamma_wasserstein = 1e-2, 
-                    reg_var = 10, sinkhorn_iter = 5, clip_grad = 10):
-    graph = utils.InvarianceNNGraph()
+                    gamma_wasserstein = 1e-2, wasserstein_start_step = 2000,
+                    reg_var = 10, sinkhorn_iter = 5, clip_grad = 40):
+    graph = nn_graph.InvarianceNNGraph()
     batch_data = []
     for env in data_train:
         batch = tf.data.Dataset.from_tensor_slices((env[0], env[1]))
@@ -106,7 +55,8 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
     
 
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    parameter = f'_num_steps_{num_steps}_lr_{learning_rate}_reg_wasserstein_{reg_wasserstein}_wasserstein_epoch_{wasserstein_epoch}_reg_var_{reg_var}_gamma_wasserstein_{gamma_wasserstein}_sinkhorn_iter_{sinkhorn_iter}'
+    expt_id = np.random.randint(1000000)
+    parameter = f'_expt-id_{expt_id}_num_steps_{num_steps}_lr_{learning_rate}_reg_wasserstein_{reg_wasserstein}_wasserstein_epoch_{wasserstein_epoch}_reg_var_{reg_var}_gamma_wasserstein_{gamma_wasserstein}_sinkhorn_iter_{sinkhorn_iter}'
     train_log_dir = 'logs/' + current_time + parameter + '/train'
     test_log_dir = 'logs/' + current_time + parameter + '/test'
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
@@ -124,10 +74,10 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
             loss = tf.cast(0, dtype = tf.float32)
             for index, (x, y) in enumerate(data_train_epoch):
                 probs = graph(x, env = index)
-                loss = loss + utils.EntropyLoss(y, probs)
+                loss = loss + nn_graph.EntropyLoss(y, probs)
             loss_train = loss
             WD = [0,0]
-            if step % wasserstein_epoch == 0:
+            if step % wasserstein_epoch == 0 and step > wasserstein_start_step:
                 for label in [0,1]:
                     conditional_data = [env[0][env[1][:, 1] == label] for env in full_data]
                     wasserstein_dist = sh.sinkhorn_dist(graph.invariant_map(conditional_data[0]), 
@@ -185,7 +135,7 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
         loss = tf.cast(0, dtype = tf.float32)
         for index, (x, y) in enumerate(data_test_epoch):
             probs = graph(x, env = index)
-            loss = loss + utils.EntropyLoss(y, probs)
+            loss = loss + nn_graph.EntropyLoss(y, probs)
         test_loss(loss)
             
         accuracy_test = tf.cast(0, dtype = tf.float32)
@@ -197,7 +147,7 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
         accuracy_test = accuracy_test/2
         test_accuracy(accuracy_test)
         WD = [0,0]
-        if step % wasserstein_epoch == 0:
+        if step % wasserstein_epoch == 0 and step > wasserstein_start_step:
                 for label in [0,1]:
                     conditional_data = [env[0][env[1][:, 1] == label] for env in full_data]
                     wasserstein_dist = sh.sinkhorn_dist(graph.invariant_map(conditional_data[0]), 
@@ -215,7 +165,8 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
     for step, data in enumerate(zip(*batch_data), 1):
         batch_data_train = data[:2]
         batch_data_test = data[2:]
-        wd0_tr, wd1_tr = train_step(batch_data_train, data_train, step)
+        #wd0_tr, wd1_tr = train_step(batch_data_train, data_train, step)
+        _, _ = train_step(batch_data_train, batch_data_train, step)
         with train_summary_writer.as_default():
             tf.summary.scalar('loss', train_loss.result(), step=step)
             tf.summary.scalar('accuracy', train_accuracy.result(), step=step)
@@ -225,7 +176,8 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
             for y in [0,1]:
                 tf.summary.scalar('wasserstein_y:'+str(y), train_wasserstein_y[y].result(), step = step)   
         
-        w0, w1 = test_step(batch_data_test, data_test, step)
+        #w0, w1 = test_step(batch_data_test, data_test, step)
+        _, _ = test_step(batch_data_test, batch_data_test, step)
       
         with test_summary_writer.as_default():
             tf.summary.scalar('loss', test_loss.result(), step=step)
@@ -258,30 +210,5 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
         if step % 50 == 0:
             print(f'Done step {step}\n')
             
-    return graph
-
-
-reg_wasserstein, reg_var, lr, gamma_wasserstein = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
-
-graph = InvarLabelShift(data_train, data_test, num_steps=10, 
-                        reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
-                        wasserstein_epoch = 10, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = 5)
-
-accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr}
-accuracy['train'] = dict()
-for index, data in data_train:
-    x, y = data[0], data[1]
-    predict = graph(x, env = index, predict = True)
-    accuracy['train'][index] = tf.reduce_mean(tf.cast(tf.equal(y, predict), dtype = tf.float32))
-
-
-accuracy['test'] = dict()
-for index, data in data_test:
-    x, y = data[0], data[1]
-    predict = graph(x, env = index, predict = True)
-    accuracy['test'][index] = tf.reduce_mean(tf.cast(tf.equal(y, predict), dtype = tf.float32))
-
-with open('out.json', 'a') as f:
-    json.dump(accuracy, f)
-
+    return graph, current_time, expt_id
 

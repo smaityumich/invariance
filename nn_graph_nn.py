@@ -12,10 +12,11 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
         initializer = 'random_normal'
         self.weight = {'weight1': self.add_weight(shape=(8, 32), initializer=initializer, trainable=True), 
                         'weight2': self.add_weight(shape=(32, 16), initializer=initializer, trainable=True), 
-                        'weight3': self.add_weight(shape=(16, 1), initializer=initializer, trainable=True)}
+                        'weight3': self.add_weight(shape=(16, 4), initializer=initializer, trainable=True), 
+                        'weight4': self.add_weight(shape=(4, 1), initializer=initializer, trainable=True)}
         self.bias = {'bias1': self.add_weight(shape=(32, ), initializer=initializer, trainable=True), 
                         'bias2': self.add_weight(shape=(16, ), initializer=initializer, trainable=True), 
-                        'bias3': self.add_weight(shape=(1, ), initializer=initializer, trainable=True),
+                        'bias3': self.add_weight(shape=(4, ), initializer=initializer, trainable=True),
                         'bias_final0': self.add_weight(shape = (1,), initializer = initializer, trainable = True), 
                         'bias_final1': self.add_weight(shape = (1,), initializer = initializer, trainable = True)}
         
@@ -39,6 +40,7 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
         
     def call(self, x, env = 0, predict = False):
         out = self.invariant_map(x)
+        out = tf.matmul(out, self.weight['weight4'])
         #out = tf.math.log(out+1)
         if env == 0:
             out = tf.add(out, self.bias['bias_final0'])

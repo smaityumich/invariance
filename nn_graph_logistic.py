@@ -10,12 +10,15 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
     def __init__(self):
         super(InvarianceNNGraph, self).__init__()
         initializer = 'random_normal'
-        self.weight = {'weight1': self.add_weight(shape=(8, 32), initializer=initializer, trainable=True), 
-                        'weight2': self.add_weight(shape=(32, 16), initializer=initializer, trainable=True), 
-                        'weight3': self.add_weight(shape=(16, 1), initializer=initializer, trainable=True)}
-        self.bias = {'bias1': self.add_weight(shape=(32, ), initializer=initializer, trainable=True), 
-                        'bias2': self.add_weight(shape=(16, ), initializer=initializer, trainable=True), 
-                        'bias3': self.add_weight(shape=(1, ), initializer=initializer, trainable=True),
+        self.weight = {'weight1': self.add_weight(shape=(392, 100), initializer=initializer, trainable=True), 
+                        'weight2': self.add_weight(shape=(100, 32), initializer=initializer, trainable=True), 
+                        'weight3': self.add_weight(shape=(32, 6), initializer=initializer, trainable=True), 
+                        'weight4': self.add_weight(shape=(6, 1), initializer=initializer, trainable=True)}
+                        
+        self.bias = {'bias1': self.add_weight(shape=(100, ), initializer=initializer, trainable=True), 
+                        'bias2': self.add_weight(shape=(32, ), initializer=initializer, trainable=True), 
+                        'bias3': self.add_weight(shape=(6, ), initializer=initializer, trainable=True),
+                        'bias4': self.add_weight(shape=(1, ), initializer=initializer, trainable=True),
                         'bias_final0': self.add_weight(shape = (1,), initializer = initializer, trainable = True), 
                         'bias_final1': self.add_weight(shape = (1,), initializer = initializer, trainable = True)}
         
@@ -31,6 +34,11 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
         out = (out - mean)/std
         
         out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight3']), self.bias['bias3']))
+        mean = tf.math.reduce_mean(out, axis = 0)
+        std = tf.math.reduce_std(out, axis = 0)
+        out = (out - mean)/std
+
+        out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight4']), self.bias['bias4']))
         mean = tf.math.reduce_mean(out, axis = 0)
         std = tf.math.reduce_std(out, axis = 0)
         out = (out - mean)/std

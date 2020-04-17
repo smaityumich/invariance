@@ -31,7 +31,7 @@ def read_lecun_mnist(path=None, flatten=True):
     # y_train = one_hot.transform(y_train.reshape(-1,1))
     # y_test = one_hot.transform(y_test.reshape(-1,1))
     
-    idx_train = np.random.choice(X_train.shape[0], size=10000, replace=False)
+    idx_train = np.random.choice(X_train.shape[0], size=12000, replace=False)
     return X_train[idx_train], y_train[idx_train], X_test, y_test
     # return X_train, y_train, X_test, y_test
 
@@ -57,7 +57,7 @@ def color_digits(X, y, color_noise, downsample=True):
     return colored_X
     
     
-def make_environments(data=None, downsample=True, path=None):
+def make_environments(data=None, downsample=True, path=None, red_0_corrs = None):
     if data is None:
         X_train, y_train, X_test, y_test = read_lecun_mnist(path=path, flatten=False)
     else:
@@ -66,7 +66,8 @@ def make_environments(data=None, downsample=True, path=None):
     y_train = binarize(y_train)
     y_test = binarize(y_test)
     
-    red_0_corrs = [0.8, 0.9]
+    if red_0_corrs == None: 
+        red_0_corrs = [0.8, 0.9]
     
     n_envs = len(red_0_corrs)
     idx_order = list(range(X_train.shape[0]))
