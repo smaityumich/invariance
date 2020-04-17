@@ -44,9 +44,9 @@ data_test = [[x0_test, y0_test], [x1_test, y1_test]]
 #x1 = tf.cast(x1, dtype = tf.float32)
 #data_test = [[x0, y0], [x1, y1]]
 
-reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5]))
-num_steps = 15000
-sinkhorn_iter = 5
+reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6]))
+num_steps = 8000
+#sinkhorn_iter = 5
 fitted_graph, current_time, expt_id = InvarLabelShift(data_train, data_test, num_steps=num_steps, 
                         reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
                         wasserstein_epoch = wasserstein_epoch, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = sinkhorn_iter)
@@ -69,7 +69,7 @@ for index, data in enumerate(data_test):
     predict = fitted_graph(x, env = index, predict = True)
     accuracy['test'][index] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
-with open('out_mnist7.json', 'a') as f:
+with open('summary/out_mnist8.json', 'a') as f:
     f.writelines(str(accuracy)+'\n')
 
 
