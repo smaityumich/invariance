@@ -69,7 +69,7 @@ for index, data in enumerate(data_test):
     predict = fitted_graph(x, env = index, predict = True)
     accuracy['test'][index] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
-with open('out_mnist5.json', 'a') as f:
+with open('out_mnist7.json', 'a') as f:
     f.writelines(str(accuracy)+'\n')
 
 
