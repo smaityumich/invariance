@@ -44,6 +44,10 @@ data_test = [[x0_test, y0_test], [x1_test, y1_test]]
 #x1 = tf.cast(x1, dtype = tf.float32)
 #data_test = [[x0, y0], [x1, y1]]
 
+
+# Parameter infos
+
+
 reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6]))
 num_steps = 8000
 #sinkhorn_iter = 5
