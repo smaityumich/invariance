@@ -17,6 +17,30 @@ def InvarLabelShift(data_train, data_test, batch_size = 250, num_steps = 2500,
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
                     gamma_wasserstein = 1e-2, wasserstein_start_step = 2000,
                     reg_var = 10, sinkhorn_iter = 5, clip_grad = 40):
+
+
+    '''
+    Invariant Label Shift: finds invariant representation for (generalized) label shift model
+    
+    Input: 
+        data_train: list of two environments where each environment is a list [x, y]
+        data_test: same as data_train; but with test data
+        batch_size: (int) batch size for the environments
+        num_steps: (int) number of training epochs
+        learning_rate: (float) learining rate 
+        reg_wasserstein: (float) regularization parameter for wasserstein regularizer
+        wasserstein_epoch: (int) epoch interval at which wasserstin regularizer is activated
+        gamma_wasserstein: (float) gamma parameter in sinkhorn algorithm
+        wasserstein_start_step: (int) epoch at which wasserstein regularized is activated for the first time
+        reg_var: (float) regularization parameter for l_2 regularizer in loss
+        sinkhorn_iter: (int) iteration in sinkhorn algorithm
+        clip_grad: (float) Clipping value for clip_by_norm for gradients
+
+    Output: 
+        graph: fitted NN graph
+        current_time: start time of experiment
+        expt_id: a random integer as experiment id
+    '''
     graph = nn_graph.InvarianceNNGraph()
     batch_data = []
     for env in data_train:

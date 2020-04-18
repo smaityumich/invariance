@@ -46,7 +46,13 @@ data_test = [[x0_test, y0_test], [x1_test, y1_test]]
 
 
 # Parameter infos
-
+'''Parameter infos:
+reg_wasserstein: (float) regularization parameter for wasserstein regularizer
+reg_var: (float) regularization parameter for l_2 regularizer in loss
+lr: (float) learning rate
+gamma_wasserstein: (float) gamma parameter in sinkhorn algorithm
+wasserstein_epoch: (int) epoch interval at which wasserstin regularizer is activated
+sinkhorn_iter: (int) iteration in sinkhorn algorithm'''
 
 reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6]))
 num_steps = 8000

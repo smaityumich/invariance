@@ -6,6 +6,11 @@ import numpy as np
 
 
 class InvarianceNNGraph(keras.Model, keras.layers.Layer):
+
+    '''
+    Invariant NN graph for Label shift for two environments
+    Four layer NN for invariant representation
+    '''
     
     def __init__(self):
         super(InvarianceNNGraph, self).__init__()
