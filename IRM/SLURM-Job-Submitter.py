@@ -7,7 +7,7 @@ import itertools
 job_file = 'submit.sbat'
 
 # Experiment 1
-reg_w = np.array(range(1, 51))
+reg_w = np.array(range(1, 21))
 reg_v = [0.01]
 #reg_v = np.array(range(1, 11))/50
 lrs = np.array([1e-4])
@@ -33,7 +33,7 @@ for reg_wasserstein, reg_var, lr, _, sinkhorn_iter in itertools.product(reg_w, r
         fh.writelines("#SBATCH --mail-type=NONE\n")
         fh.writelines("#SBATCH --mail-user=smaity@umich.edu\n")
         fh.writelines('#SBATCH --partition=standard\n')
-        fh.writelines(f"python3 MNIST_expt.py {reg_wasserstein} {reg_var} {lr} 1 1 {sinkhorn_iter}")
+        fh.writelines(f"python3 MNIST_irm.py {reg_wasserstein} {reg_var} {lr} 1 1 {sinkhorn_iter}")
 
 
     os.system("sbatch %s" %job_file)
