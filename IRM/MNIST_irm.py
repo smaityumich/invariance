@@ -10,7 +10,7 @@ import json
 from data_load import *
 
 #np.random.seed(1)
-data_train, data_test = make_environments(path='MNIST', red_0_corrs=[0.1, 0.3])
+data_train, data_test = make_environments(path='MNIST', red_0_corrs=[0.9, 0.7])
 
 x0_train, y0_train = data_train[0]
 x1_train, y1_train = data_train[1]
