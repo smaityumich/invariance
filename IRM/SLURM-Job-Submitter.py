@@ -14,7 +14,7 @@ lrs = np.array([1e-4])
 iters = range(1)
 sh_itr = [10]
 
-os.system('touch summary/irm_mnist1.json')
+os.system('touch summary/irm_mnist2.json')
 
 
 
