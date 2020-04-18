@@ -27,13 +27,13 @@ for reg_wasserstein, reg_var, lr, _, sinkhorn_iter in itertools.product(reg_w, r
         fh.writelines(f"#SBATCH --job-name=invar.job\n")
         fh.writelines('#SBATCH --nodes=1\n')
         fh.writelines('#SBATCH --cpus-per-task=1\n')
-        fh.writelines('#SBATCH --mem-per-cpu=2gb\n')
+        fh.writelines('#SBATCH --mem-per-cpu=6gb\n')
         fh.writelines("#SBATCH --time=03:00:00\n")
         fh.writelines("#SBATCH --account=yuekai1\n")
         fh.writelines("#SBATCH --mail-type=NONE\n")
         fh.writelines("#SBATCH --mail-user=smaity@umich.edu\n")
         fh.writelines('#SBATCH --partition=standard\n')
-        fh.writelines(f"python3 MNIST_irm.py {reg_wasserstein} {reg_var} {lr} 1 1 {sinkhorn_iter}")
+        fh.writelines(f"python3 MNIST_irm.py {reg_wasserstein} {reg_var} {lr} 1 50 {sinkhorn_iter}")
 
 
     os.system("sbatch %s" %job_file)
