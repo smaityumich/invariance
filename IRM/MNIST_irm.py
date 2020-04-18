@@ -59,7 +59,7 @@ x, y = data_test[0], data_test[1]
 predict = fitted_graph(x, predict = True)
 accuracy['test'] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
-with open('summary/irm_mnist4.json', 'a') as f:
+with open('summary/irm_mnist5.json', 'a') as f:
     f.writelines(str(accuracy)+'\n')
 
 
