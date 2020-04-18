@@ -138,7 +138,7 @@ def IRM(data_train, data_test, batch_size = 250, num_steps = 2500,
             
     def test_step(data_test_epoch, step):
         loss = tf.cast(0, dtype = tf.float32)
-        x, y = data_test_epoch
+        x, y = data_test_epoch[0], data_test_epoch[1]
         probs = graph(x)
         loss = nn_graph.EntropyLoss(y, probs)
         test_loss(loss)
@@ -150,7 +150,7 @@ def IRM(data_train, data_test, batch_size = 250, num_steps = 2500,
 
     for step, data in enumerate(zip(*batch_data), 1):
         batch_data_train = data[:2]
-        batch_data_test = data[2:]
+        batch_data_test = data[2]
         #wd0_tr, wd1_tr = train_step(batch_data_train, data_train, step)
         _, _ = train_step(batch_data_train, data_train, step)
 
@@ -187,7 +187,7 @@ def IRM(data_train, data_test, batch_size = 250, num_steps = 2500,
             for y in [0,1]:
                 train_wasserstein_y[y].reset_states()
             
-        if step % 50 == 0:
+        if step % 1 == 0:
             print(f'Done step {step}\n')
             
     return graph, current_time, expt_id
