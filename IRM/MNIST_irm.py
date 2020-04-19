@@ -36,7 +36,7 @@ wasserstein_epoch: (int) epoch interval at which wasserstin regularizer is activ
 sinkhorn_iter: (int) iteration in sinkhorn algorithm'''
 
 reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6]))
-num_steps = 8000
+num_steps = 15000
 #sinkhorn_iter = 5
 fitted_graph, current_time, expt_id = setup_irm.IRM(data_train, data_test, num_steps=num_steps, 
                         reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
