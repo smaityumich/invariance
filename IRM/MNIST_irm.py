@@ -10,7 +10,7 @@ import json
 from data_load import *
 
 #np.random.seed(1)
-data_train, data_test = make_environments(path='MNIST')
+data_train, data_test = make_environments(path='MNIST', red_0_corrs = [0.7, 0.9])
 
 x0_train, y0_train = data_train[0]
 x1_train, y1_train = data_train[1]
@@ -59,7 +59,7 @@ x, y = data_test[0], data_test[1]
 predict = fitted_graph(x, predict = True)
 accuracy['test'] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
-with open('summary/irm_mnist7.json', 'a') as f:
+with open('summary/irm_mnist8.json', 'a') as f:
     f.writelines(str(accuracy)+'\n')
 
 
