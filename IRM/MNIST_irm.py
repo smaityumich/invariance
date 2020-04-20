@@ -9,7 +9,9 @@ import sys
 import json
 from data_load import *
 
-#np.random.seed(1)
+seed_id = np.random.randint(10000)
+
+np.random.seed(seed_id)
 data_train, data_test = make_environments(path='MNIST', red_0_corrs = [0.8, 0.9])
 
 x0_train, y0_train = data_train[0]
@@ -47,6 +49,7 @@ fitted_graph, current_time, expt_id = setup_irm.IRM(data_train, data_test, num_s
 accuracy = {'reg_wasserstein': reg_wasserstein, 'reg_var': reg_var, 'learning_rate': lr, 'datetime': current_time, 
             'num-steps': num_steps, 'wasserstein-epoch': wasserstein_epoch, 'sinkhorn-iteration': sinkhorn_iter}
 accuracy['id'] = expt_id
+accuracy['seed'] = seed_id
 accuracy['train'] = dict()
 for index, data in enumerate(data_train):
     x, y = data[0], data[1]
