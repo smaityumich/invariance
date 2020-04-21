@@ -7,14 +7,14 @@ import itertools
 job_file = 'submit.sbat'
 
 # Experiment 1
-reg_w = np.array(range(1, 20))/10
-reg_v = [0]
+reg_w = np.arange(1.6, 2.1, 0.1)
+reg_v = [0, 1, 2, 3, 4]
 #reg_v = np.array(range(1, 11))/50
-lrs = np.array([1e-4])
+lrs = np.array([1e-3, 1e-4])
 iters = range(1)
 sh_itr = [6]
 
-#os.system('touch summary/irm_mnist10.json')
+#os.system('touch summary/irm_mnist11.json')
 
 
 
