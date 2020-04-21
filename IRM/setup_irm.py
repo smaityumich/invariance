@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import irm_logistic as nn_graph
+import irm_logistic2 as nn_graph
 import datetime
 from tensorflow import keras
 import matplotlib.pyplot as plt
