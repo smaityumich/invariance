@@ -165,7 +165,8 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             tf.summary.scalar('loss', train_loss.result(), step=step)
             for env in [0,1]:
                 tf.summary.scalar('accuracy-train-env:'+str(env), train_accuracy_env[env].result(), step = step)
-                tf.summary.histogram('train-data/train-logit-hist-env-'+str(env), data = logits[env], step = step)
+                if step % 50 == 0:
+                    tf.summary.histogram('train-data/train-logit-hist-env-'+str(env), data = logits[env], step = step)
                 
             for y in [0,1]:
                 tf.summary.scalar('wasserstein-train-y:'+str(y), train_wasserstein_y[y].result(), step = step)  
@@ -179,7 +180,8 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
         with test_summary_writer.as_default():
             tf.summary.scalar('loss', test_loss.result(), step=step)
             tf.summary.scalar('test-accuracy', test_accuracy.result(), step=step)
-            tf.summary.histogram('test-data/logit-histogram', data = test_probs, step = step)
+            if step % 50 == 0:
+                tf.summary.histogram('test-data/logit-histogram', data = test_probs, step = step)
               
                 
               
