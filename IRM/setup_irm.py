@@ -196,7 +196,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             for y in [0,1]:
                 train_wasserstein_y[y].reset_states()
             
-        if step % 1 == 0:
+        if step % 100 == 0:
             print(f'Done step {step}\n')
             
     return graph, current_time, expt_id
