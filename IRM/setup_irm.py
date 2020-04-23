@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import irm_logistic2 as nn_graph
+import irm_simple as nn_graph
 import datetime
 from tensorflow import keras
 import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ import json
 def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500, 
                     learning_rate = 1e-5, 
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
-                    gamma_wasserstein = 1e-2, wasserstein_start_step = 2000,
+                    gamma_wasserstein = 1e-2, wasserstein_start_step = 1000,
                     reg_var = 10, sinkhorn_iter = 5, clip_grad = 40):
 
 
@@ -88,7 +88,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
 
     
     
-    def train_step(data_train_epoch, full_data, step):
+    def train_step(data_train_epoch, data_train_wasserstein, full_data, step):
 
         with tf.GradientTape() as g:
             loss = tf.cast(0, dtype = tf.float32)
@@ -99,7 +99,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             WD = [0,0]
             if step % wasserstein_epoch == 0:
                 for label in [0,1]:
-                    conditional_data = [env[0][env[1][:, 1] == label] for env in full_data]
+                    conditional_data = [env[0][env[1][:, 1] == label] for env in data_train_wasserstein]
                     wasserstein_dist = sh.sinkhorn_dist(graph.invariant_map(conditional_data[0]), 
                                                                    graph.invariant_map(conditional_data[1]), 
                                                                    gamma_wasserstein, sinkhorn_iter)
@@ -134,9 +134,13 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             predict = graph(x, predict = True)
             accuracy_train_env = _accuracy(y[:,1], predict)
             train_accuracy_env[index](accuracy_train_env)
-        return WD[0], WD[1]
+
+        logits = dict()
+        for index, (x, y) in enumerate(full_data):
+            logits[index] = graph(x)[:, 1]
+        return WD[0], WD[1], logits
             
-    def test_step(data_test_epoch, step):
+    def test_step(data_test_epoch, full_data, step):
         loss = tf.cast(0, dtype = tf.float32)
         x, y = data_test_epoch[0], data_test_epoch[1]
         probs = graph(x)
@@ -148,16 +152,20 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
         accuracy_test = _accuracy(y[:,1], predict)
         test_accuracy(accuracy_test)
 
+        x, y = full_data
+        return graph(x)[:, 1]
+
     for step, data in enumerate(zip(*batch_data), 1):
         batch_data_train = data[:2]
         batch_data_test = data[2]
         #_, _ = train_step(batch_data_train, data_train, step) # If using full data to calculate wasserstein distance
-        _, _ = train_step(batch_data_train, batch_data_train, step) # If using batch data to calculate wasserstein distance
+        _, _, logits = train_step(batch_data_train, batch_data_train, data_train, step) # If using batch data to calculate wasserstein distance
 
         with train_summary_writer.as_default():
             tf.summary.scalar('loss', train_loss.result(), step=step)
             for env in [0,1]:
                 tf.summary.scalar('accuracy-train-env:'+str(env), train_accuracy_env[env].result(), step = step)
+                tf.summary.histogram('train-data/train-logit-hist-env-'+str(env), data = logits[env], step = step)
                 
             for y in [0,1]:
                 tf.summary.scalar('wasserstein-train-y:'+str(y), train_wasserstein_y[y].result(), step = step)  
@@ -166,11 +174,12 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             tf.summary.scalar('gradient-norm', grad_norm.result(), step = step) 
         
         
-        test_step(batch_data_test, step)
+        test_probs = test_step(batch_data_test, data_test, step)
       
         with test_summary_writer.as_default():
             tf.summary.scalar('loss', test_loss.result(), step=step)
             tf.summary.scalar('test-accuracy', test_accuracy.result(), step=step)
+            tf.summary.histogram('test-data/logit-histogram', data = test_probs, step = step)
               
                 
               
@@ -187,7 +196,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             for y in [0,1]:
                 train_wasserstein_y[y].reset_states()
             
-        if step % 100 == 0:
+        if step % 1 == 0:
             print(f'Done step {step}\n')
             
     return graph, current_time, expt_id
