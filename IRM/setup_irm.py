@@ -158,7 +158,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
     for step, data in enumerate(zip(*batch_data), 1):
         batch_data_train = data[:2]
         batch_data_test = data[2]
-        #_, _ = train_step(batch_data_train, data_train, step) # If using full data to calculate wasserstein distance
+        #_, _ = train_step(batch_data_train, data_train, data_train, step) # If using full data to calculate wasserstein distance
         _, _, logits = train_step(batch_data_train, batch_data_train, data_train, step) # If using batch data to calculate wasserstein distance
 
         with train_summary_writer.as_default():
