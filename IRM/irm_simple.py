@@ -30,7 +30,7 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
         out = (out - mean)/std
 
 
-        out = tf.nn.sigmoid(tf.add(tf.matmul(x, self.weight['weight2']), self.bias['bias2']))
+        out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight2']), self.bias['bias2']))
         mean = tf.math.reduce_mean(out, axis = 0)
         std = tf.math.reduce_std(out, axis = 0)
         out = (out - mean)/std
@@ -40,6 +40,10 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
     def call(self, x, predict = False):
         out = self.invariant_map(x)
         out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight3']), self.bias['bias3']))
+        mean = tf.math.reduce_mean(out, axis = 0)
+        std = tf.math.reduce_std(out, axis = 0)
+        out = (out - mean)/std
+        
         out = tf.concat([-out, out], axis = 1)
         out = tf.nn.softmax(out)
         return tf.cast(tf.argmax(out, axis = 1), dtype = tf.float32) if predict else out
