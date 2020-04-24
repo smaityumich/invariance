@@ -8,13 +8,14 @@ job_file = 'submit.sbat'
 
 # Experiment 1
 reg_w = np.arange(0, 101, 4)
+
 reg_v = [0, 0.1]
 #reg_v = np.array(range(1, 11))/50
 lrs = np.array([3e-4])
 iters = range(1)
 sh_itr = [6]
 
-os.system('touch summary/irm_mnist_simple1.json')
+os.system('touch summary/irm_mnist_simple2.json')
 
 
 
