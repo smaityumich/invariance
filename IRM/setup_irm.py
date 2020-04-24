@@ -12,7 +12,7 @@ import json
 
 
 
-def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500, 
+def IRM(data_train, data_test, batch_size = 250, num_steps = 2500, 
                     learning_rate = 1e-5, 
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
                     gamma_wasserstein = 1e-2, wasserstein_start_step = 1000,
@@ -165,7 +165,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             tf.summary.scalar('loss', train_loss.result(), step=step)
             for env in [0,1]:
                 tf.summary.scalar('accuracy-train-env:'+str(env), train_accuracy_env[env].result(), step = step)
-                if step % 50 == 0:
+                if step % 250 == 0:
                     tf.summary.histogram('train-data/train-logit-hist-env-'+str(env), data = logits[env], step = step)
                 
             for y in [0,1]:
@@ -180,7 +180,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
         with test_summary_writer.as_default():
             tf.summary.scalar('loss', test_loss.result(), step=step)
             tf.summary.scalar('test-accuracy', test_accuracy.result(), step=step)
-            if step % 50 == 0:
+            if step % 250 == 0:
                 tf.summary.histogram('test-data/logit-histogram', data = test_probs, step = step)
               
                 
