@@ -137,7 +137,7 @@ def IRM(data_train, data_test, batch_size = 1000, num_steps = 2500,
 
         logits = dict()
         for index, (x, y) in enumerate(full_data):
-            logits[index] = graph(x)[:, 1]
+            logits[index] = graph(x)[:, 1], y
         return WD[0], WD[1], logits
             
     def test_step(data_test_epoch, full_data, step):
@@ -153,20 +153,23 @@ def IRM(data_train, data_test, batch_size = 1000, num_steps = 2500,
         test_accuracy(accuracy_test)
 
         x, y = full_data
-        return graph(x)[:, 1]
+        return graph(x)[:, 1], y
 
     for step, data in enumerate(zip(*batch_data), 1):
         batch_data_train = data[:2]
         batch_data_test = data[2]
         #_, _ = train_step(batch_data_train, data_train, data_train, step) # If using full data to calculate wasserstein distance
-        _, _, logits = train_step(batch_data_train, batch_data_train, data_train, step) # If using batch data to calculate wasserstein distance
+        _, _, train_probs = train_step(batch_data_train, batch_data_train, data_train, step) # If using batch data to calculate wasserstein distance
 
         with train_summary_writer.as_default():
             tf.summary.scalar('loss', train_loss.result(), step=step)
             for env in [0,1]:
                 tf.summary.scalar('accuracy-train-env:'+str(env), train_accuracy_env[env].result(), step = step)
                 if step % 250 == 0:
-                    tf.summary.histogram('train-data/train-logit-hist-env-'+str(env), data = logits[env], step = step)
+                    probs, y = train_probs[env]
+                    for label in [0,1]:
+                        conditional_probs = probs[y[:,1]==label]
+                        tf.summary.histogram('train-data/train-logit-hist-env-'+str(env)+'-label-'+str(label), data = conditional_probs, step = step)
                 
             for y in [0,1]:
                 tf.summary.scalar('wasserstein-train-y:'+str(y), train_wasserstein_y[y].result(), step = step)  
@@ -181,7 +184,10 @@ def IRM(data_train, data_test, batch_size = 1000, num_steps = 2500,
             tf.summary.scalar('loss', test_loss.result(), step=step)
             tf.summary.scalar('test-accuracy', test_accuracy.result(), step=step)
             if step % 250 == 0:
-                tf.summary.histogram('test-data/logit-histogram', data = test_probs, step = step)
+                probs, y = test_probs
+                for label in [0,1]:
+                    conditional_probs = probs[y[:,1]==label]
+                    tf.summary.histogram('test-data/logit-histogram-label-'+str(label), data = conditional_probs, step = step)
               
                 
               

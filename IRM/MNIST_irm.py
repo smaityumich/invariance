@@ -37,12 +37,12 @@ gamma_wasserstein: (float) gamma parameter in sinkhorn algorithm
 wasserstein_epoch: (int) epoch interval at which wasserstin regularizer is activated
 sinkhorn_iter: (int) iteration in sinkhorn algorithm'''
 
-reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6]))
-num_steps = 10000
+reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter, filename = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6])), sys.argv[7]
+num_steps = 15000
 #sinkhorn_iter = 5
 fitted_graph, current_time, expt_id = setup_irm.IRM(data_train, data_test, num_steps=num_steps, 
                         reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
-                        wasserstein_epoch = wasserstein_epoch, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = sinkhorn_iter)
+                        wasserstein_epoch = wasserstein_epoch, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = sinkhorn_iter, wasserstein_start_step= 400)
 
 
 
@@ -62,7 +62,7 @@ x, y = data_test[0], data_test[1]
 predict = fitted_graph(x, predict = True)
 accuracy['test'] = float(tf.reduce_mean(tf.cast(tf.equal(y[:,1], predict), dtype = tf.float32)))
 
-with open('summary/irm_mnist_simple5.json', 'a') as f:
+with open(filename, 'a') as f:
     f.writelines(str(accuracy)+'\n')
 
 
