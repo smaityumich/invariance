@@ -15,12 +15,12 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
     def __init__(self):
         super(InvarianceNNGraph, self).__init__()
         initializer = 'random_normal'
-        self.weight = {'weight1': self.add_weight(shape=(392, 25), initializer=initializer, trainable=True), 
-                        #'weight2': self.add_weight(shape=(100, 5), initializer=initializer, trainable=True), 
-                        'weight3': self.add_weight(shape=(25, 1), initializer=initializer, trainable=True)}
+        self.weight = {'weight1': self.add_weight(shape=(392, 100), initializer=initializer, trainable=True), 
+                        'weight2': self.add_weight(shape=(100, 5), initializer=initializer, trainable=True), 
+                        'weight3': self.add_weight(shape=(5, 1), initializer=initializer, trainable=True)}
                         
-        self.bias = {'bias1': self.add_weight(shape=(25, ), initializer=initializer, trainable=True), 
-                        #'bias2': self.add_weight(shape=(100, ), initializer=initializer, trainable=True), 
+        self.bias = {'bias1': self.add_weight(shape=(100, ), initializer=initializer, trainable=True), 
+                        'bias2': self.add_weight(shape=(5, ), initializer=initializer, trainable=True), 
                         'bias3': self.add_weight(shape=(1, ), initializer=initializer, trainable=True)}
         
     def invariant_map(self, x):
@@ -30,10 +30,10 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
         out = (out - mean)/std
 
 
-        #out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight2']), self.bias['bias2']))
-        #mean = tf.math.reduce_mean(out, axis = 0)
-        #std = tf.math.reduce_std(out, axis = 0)
-        #out = (out - mean)/std
+        out = tf.nn.sigmoid(tf.add(tf.matmul(out, self.weight['weight2']), self.bias['bias2']))
+        mean = tf.math.reduce_mean(out, axis = 0)
+        std = tf.math.reduce_std(out, axis = 0)
+        out = (out - mean)/std
         
         return out
         
