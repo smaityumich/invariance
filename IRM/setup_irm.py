@@ -11,7 +11,6 @@ import json
 
 
 
-
 def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500, 
                     learning_rate = 1e-5, 
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
