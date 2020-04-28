@@ -99,7 +99,9 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             if step % wasserstein_epoch == 0:
                 for label in [0,1]:
                     conditional_data = [env[0][env[1][:, 1] == label] for env in data_train_wasserstein]
-                    wasserstein_dist = sh.sinkhorn_dist(graph.invariant_map(conditional_data[0]), 
+                    # normal sinkhorn: sh.sinkhorn_dist
+                    # symmetric sinkhorn: sh.sys_sinkhorn
+                    wasserstein_dist = sh.sym_sinkhorn(graph.invariant_map(conditional_data[0]), 
                                                                    graph.invariant_map(conditional_data[1]), 
                                                                    gamma_wasserstein, sinkhorn_iter)
                     train_wasserstein_y[label](wasserstein_dist)
