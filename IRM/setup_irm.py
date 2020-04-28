@@ -7,6 +7,9 @@ from tensorflow import keras
 import matplotlib.pyplot as plt
 import sys
 import json
+import utils
+
+
 
 
 
@@ -81,9 +84,6 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
     test_summary_writer = tf.summary.create_file_writer(test_log_dir)
     
     
-    def _accuracy(y, ypred):
-        acc = tf.cast(tf.equal(y, ypred), dtype = tf.float32)
-        return tf.reduce_mean(acc)
 
     
     
@@ -93,7 +93,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             loss = tf.cast(0, dtype = tf.float32)
             for index, (x, y) in enumerate(data_train_epoch):
                 probs = graph(x)
-                loss = loss + nn_graph.EntropyLoss(y, probs)
+                loss = loss + utils.EntropyLoss(y, probs)
             loss_train = loss
             WD = [0,0]
             if step % wasserstein_epoch == 0:
@@ -104,6 +104,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
                     wasserstein_dist = sh.sym_sinkhorn(graph.invariant_map(conditional_data[0]), 
                                                                    graph.invariant_map(conditional_data[1]), 
                                                                    gamma_wasserstein, sinkhorn_iter)
+                    
                     train_wasserstein_y[label](wasserstein_dist)
                     WD[label] = wasserstein_dist
                     if step > wasserstein_start_step:
@@ -133,7 +134,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             
         for index, (x, y) in enumerate(data_train_epoch):
             predict = graph(x, predict = True)
-            accuracy_train_env = _accuracy(y[:,1], predict)
+            accuracy_train_env = utils._accuracy(y[:,1], predict)
             train_accuracy_env[index](accuracy_train_env)
 
         logits = dict()
@@ -145,12 +146,12 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
         loss = tf.cast(0, dtype = tf.float32)
         x, y = data_test_epoch[0], data_test_epoch[1]
         probs = graph(x)
-        loss = nn_graph.EntropyLoss(y, probs)
+        loss = utils.EntropyLoss(y, probs)
         test_loss(loss)
             
         
         predict = graph(x, predict = True)
-        accuracy_test = _accuracy(y[:,1], predict)
+        accuracy_test = utils._accuracy(y[:,1], predict)
         test_accuracy(accuracy_test)
 
         x, y = full_data
