@@ -52,10 +52,7 @@ class InvarianceNNGraph(keras.Model, keras.layers.Layer):
 
 
 
-def EntropyLoss(y, prob):
-    #prob = tf.concat([1-prob, prob], axis = 1)
-    #y = tf.one_hot(y, 2)
-    return -2*tf.reduce_mean(tf.math.multiply(y, tf.math.log(prob+1e-16)))
+
 
 
     
