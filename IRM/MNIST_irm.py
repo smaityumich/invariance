@@ -12,7 +12,7 @@ from data_load import *
 seed_id = np.random.randint(10000)
 
 np.random.seed(seed_id)
-data_train, data_test = make_environments(path='MNIST', red_0_corrs = [0.8, 0.9])
+data_train, data_test = make_environments(path='MNIST', red_0_corrs = [0.7, 0.9])
 
 x0_train, y0_train = data_train[0]
 x1_train, y1_train = data_train[1]

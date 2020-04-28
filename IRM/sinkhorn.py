@@ -86,3 +86,6 @@ def sinkhorn_dist(x, y, reg, L):
     P = sinkhorn_log_stabilized(a, b, M, reg, L)
     return tf.reduce_sum(tf.math.multiply(M, P))
 
+def sym_sinkhorn(x, y, reg, L):
+    return sinkhorn_dist(x, y, reg, L) - 0.5 * (sinkhorn_dist(x, x, reg, L) + sinkhorn_dist(y, y, reg, L))
+
