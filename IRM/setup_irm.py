@@ -14,7 +14,7 @@ import json
 def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500, 
                     learning_rate = 1e-5, 
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
-                    gamma_wasserstein = 1e-2, wasserstein_start_step = 1000,
+                    gamma_wasserstein = 1e-2, wasserstein_start_step = 50,
                     reg_var = 10, sinkhorn_iter = 5, clip_grad = 40):
 
 
