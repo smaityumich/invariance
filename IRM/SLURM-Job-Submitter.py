@@ -12,10 +12,10 @@ reg_w = [2]
 reg_v = [0.1]
 #reg_v = np.array(range(1, 11))/50
 lrs = np.array([5e-4])
-iters = range(50)
+iters = range(100)
 sh_itr = [6]
-filename = 'summary/irm_mnist_simple13.json'
-#os.system('touch ' + filename)
+filename = 'summary/irm_mnist_simple14.json'
+os.system('touch ' + filename)
 
 
 
@@ -34,7 +34,7 @@ for reg_wasserstein, reg_var, lr, _, sinkhorn_iter in itertools.product(reg_w, r
         fh.writelines("#SBATCH --mail-type=NONE\n")
         fh.writelines("#SBATCH --mail-user=smaity@umich.edu\n")
         fh.writelines('#SBATCH --partition=standard\n')
-        fh.writelines(f"python3 MNIST_irm.py {reg_wasserstein} {reg_var} {lr} 1 30 {sinkhorn_iter} {filename}")
+        fh.writelines(f"python3 MNIST_irm.py {reg_wasserstein} {reg_var} {lr} 1 60 {sinkhorn_iter} {filename}")
 
 
     os.system("sbatch %s" %job_file)
