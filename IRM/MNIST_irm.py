@@ -37,12 +37,21 @@ gamma_wasserstein: (float) gamma parameter in sinkhorn algorithm
 wasserstein_epoch: (int) epoch interval at which wasserstin regularizer is activated
 sinkhorn_iter: (int) iteration in sinkhorn algorithm'''
 
-reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter, filename = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6])), sys.argv[7]
-num_steps = 15000
+if len(sys.argv) > 7:
+    reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter, filename, num_steps = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6])), sys.argv[7], int(sys.argv[8])
+    normalize = sys.argv[9]=='True' or sys.argv[9]=='true'
+elif len(sys.argv) > 6:
+    reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter, filename, num_steps = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6])), sys.argv[7], int(sys.argv[8])
+    normalize = False
+else:
+    reg_wasserstein, reg_var, lr, gamma_wasserstein, wasserstein_epoch, sinkhorn_iter, filename = float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), int(float(sys.argv[5])), int(float(sys.argv[6])), sys.argv[7]
+    num_steps = 10000
+    normalize = False
+
 #sinkhorn_iter = 5
 fitted_graph, current_time, expt_id = setup_irm.IRM(data_train, data_test, num_steps=num_steps, 
                         reg_wasserstein=reg_wasserstein, reg_var = reg_var, learning_rate = lr, 
-                        wasserstein_epoch = wasserstein_epoch, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = sinkhorn_iter, wasserstein_start_step= 400)
+                        wasserstein_epoch = wasserstein_epoch, gamma_wasserstein = gamma_wasserstein, sinkhorn_iter = sinkhorn_iter, wasserstein_start_step= 400, normalize=normalize)
 
 
 
