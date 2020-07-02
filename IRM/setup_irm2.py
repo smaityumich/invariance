@@ -14,11 +14,11 @@ import utils
 
 
 
-def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500, 
+def IRM(data_train, data_test, batch_size = 250, num_steps = 2500, 
                     learning_rate = 1e-5, 
                     reg_wasserstein = 0, wasserstein_epoch = 1, 
                     gamma_wasserstein = 1e-2, wasserstein_start_step = 50,
-                    reg_var = 10, sinkhorn_iter = 5, clip_grad = 40, normalize=False):
+                    reg_var = 10, reg_grad = 5e-1, sinkhorn_iter = 5, clip_grad = 40, normalize=False):
 
 
     '''
@@ -29,9 +29,9 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
         data_test: list [x, y]
         batch_size: (int) batch size for the environments
         num_steps: (int) number of training epochs
-        learning_rate: (float) learining rate 
+        learning_rate: (float) learning rate 
         reg_wasserstein: (float) regularization parameter for wasserstein regularizer
-        wasserstein_epoch: (int) epoch interval at which wasserstin regularizer is activated
+        wasserstein_epoch: (int) epoch interval at which wasserstein regularizer is activated
         gamma_wasserstein: (float) gamma parameter in sinkhorn algorithm
         wasserstein_start_step: (int) epoch at which wasserstein regularized is activated for the first time
         reg_var: (float) regularization parameter for l_2 regularizer in loss
@@ -97,13 +97,16 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
                     loss = loss + utils.EntropyLoss(y, probs)
                 loss_train = loss
             trainable_variables = graph.trainable_variables
+            gradient = g1.gradient(loss_train, trainable_variables)
+            for v in gradient:
+                loss = loss + reg_grad*tf.norm(v, ord = 2)**2
             WD = [0,0]
             if step % wasserstein_epoch == 0:
                 for label in [0,1]:
                     conditional_data = [env[0][env[1][:, 1] == label] for env in data_train_wasserstein]
                     # normal sinkhorn: sh.sinkhorn_dist
                     # symmetric sinkhorn: sh.sys_sinkhorn
-                    wasserstein_dist = sh.sym_sinkhorn(graph.invariant_map(conditional_data[0]), 
+                    wasserstein_dist = sh.sinkhorn_dist(graph.invariant_map(conditional_data[0]), 
                                                                    graph.invariant_map(conditional_data[1]), 
                                                                    gamma_wasserstein, sinkhorn_iter, normalize=normalize)
                     
@@ -169,7 +172,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
             tf.summary.scalar('loss', train_loss.result(), step=step)
             for env in [0,1]:
                 tf.summary.scalar('accuracy-train-env:'+str(env), train_accuracy_env[env].result(), step = step)
-                if step % 250 == 0:
+                if step % 25 == 0:
                     probs, y = train_probs[env]
                     for label in [0,1]:
                         conditional_probs = probs[y[:,1]==label]
@@ -187,7 +190,7 @@ def IRM(data_train, data_test, batch_size = 1500, num_steps = 2500,
         with test_summary_writer.as_default():
             tf.summary.scalar('loss', test_loss.result(), step=step)
             tf.summary.scalar('test-accuracy', test_accuracy.result(), step=step)
-            if step % 250 == 0:
+            if step % 25 == 0:
                 probs, y = test_probs
                 for label in [0,1]:
                     conditional_probs = probs[y[:,1]==label]

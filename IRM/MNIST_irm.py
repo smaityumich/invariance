@@ -1,7 +1,7 @@
 import tensorflow as tf
 import sinkhorn as sh
 import numpy as np
-import setup_irm
+import setup_irm2 as setup_irm
 import datetime
 from tensorflow import keras
 import matplotlib.pyplot as plt
