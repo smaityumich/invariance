@@ -4,7 +4,7 @@ import utils
 
 class Invariance():
 
-    def __init__(self, epoch = 1000, learning_rate = 1e-4, reg_covar = 1, reg_start = 100, clip_grad = 40, seed = 1,\
+    def __init__(self, epoch = 1000, learning_rate = 1e-4, reg_covar = 1, reg_start = 1000, clip_grad = 40, seed = 1,\
         lr_wasserstein = 1e-4, epsilon = 1):
 
         self.epoch = epoch
@@ -67,10 +67,10 @@ class Invariance():
         self.batch_data.append(batch.take(self.epoch))
 
     def shuffle_probabilities(self, prob0, prob1):
-        n0 = prob0.shape[0]
-        prob = tf.concat([prob0, prob1], axis = 0)
-        shuffled_prob = tf.random.shuffle(prob, seed = self.seed)
-        return shuffled_prob[:n0], shuffled_prob[n0:]
+        n0, n1 = prob0.shape[0]//2, prob1.shape[1]//2
+        shuffled_prob0 = tf.concat([prob0[:n0], prob1[:n1]], axis = 0)
+        shuffled_prob1 = tf.concat([prob0[n0:], prob1[n1:]], axis = 0)
+        return shuffled_prob0, shuffled_prob1
 
 
 
@@ -168,13 +168,13 @@ class Invariance():
                 entropy_loss += utils.entropy(logits, y)
                 #covars.append(utils.covar(logits, y))
                 with self.train_summary_writer.as_default():
-                    tf.summary.scalar(f'Accuracy for environment: {i}', utils.accuracy(logits, y), step=step)
+                    tf.summary.scalar(f'Train accuracy for environment: {i}', utils.accuracy(logits, y), step=step)
                 
                 # Save histogram
                 if step == 1 or step % 250 == 0:
                     with self.train_summary_writer.as_default():
-                        tf.summary.histogram(f'Histogram environment: {i} label 0', prob[y[:, 1] == 0], step=step)
-                        tf.summary.histogram(f'Histogram environment: {i} label 1', prob[y[:, 1] == 1], step=step)
+                        tf.summary.histogram(f'Train histogram environment: {i} label 0', prob[y[:, 1] == 0], step=step)
+                        tf.summary.histogram(f'Train histogram environment: {i} label 1', prob[y[:, 1] == 1], step=step)
             
             # Covariance regularizer 
             (_, y0), (_, y1) = data_train
@@ -210,10 +210,10 @@ class Invariance():
             logits = self.model(x)
             prob = utils.probabilities(logits)[:, 1]
             tf.summary.scalar('Entropy', utils.entropy(logits, y), step=step)
-            tf.summary.scalar('Accuracy', utils.accuracy(logits, y), step=step)
+            tf.summary.scalar('Test accuracy', utils.accuracy(logits, y), step=step)
             if step == 1 or step % 250 == 0:
-                tf.summary.histogram(f'Histogram label 0', prob[y[:, 1] == 0], step=step)
-                tf.summary.histogram(f'Histogram label 1', prob[y[:, 1] == 1], step=step)
+                tf.summary.histogram(f'Test histogram label 0', prob[y[:, 1] == 0], step=step)
+                tf.summary.histogram(f'Test histogram label 1', prob[y[:, 1] == 1], step=step)
 
 
     def fit(self):
