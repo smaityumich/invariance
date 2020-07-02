@@ -4,7 +4,7 @@ import utils
 
 class Invariance():
 
-    def __init__(self, epoch = 1000, learning_rate = 1e-4, reg_covar = 1, reg_start = 1000, clip_grad = 40, seed = 1,\
+    def __init__(self, epoch = 1000, learning_rate = 1e-4, reg_covar = 1, reg_start = 100, clip_grad = 40, seed = 1,\
         lr_wasserstein = 1e-4, epsilon = 1):
 
         self.epoch = epoch
@@ -222,7 +222,7 @@ class Invariance():
             data_test = data[-1]
             self.train_step(data_train, step=step)
             self.test_step(data_test, step=step)
-            if step % 500 == 0:
+            if step % 100 == 0:
                 x, y = self.full_data_test
                 logits = self.model(x)
                 accuracy = utils.accuracy(logits, y)
